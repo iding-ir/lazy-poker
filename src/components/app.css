@@ -28,7 +28,7 @@
 }
 
 .app-dashboard button {
-  font-size: 1.2rem;
+  font-size: 2rem;
   padding: 0.5rem 1rem;
   color: #FFFFFF;
   background-color: #9C27B0;
@@ -36,6 +36,4 @@
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.50);
 }
 
-.app-players {
-  padding: 1rem;
-}
+.app-players {}

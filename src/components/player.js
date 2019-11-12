@@ -7,7 +7,7 @@ class Player extends Component {
   render() {
     return (
       <div className="app-player">
-        <h2 className="app-player-name">{this.props.player.name}</h2>
+        <h2 className="app-player-title">{this.props.player.name}</h2>
 
         <div className="app-cards">
           {this.props.player.cards.map((card, index) => {
