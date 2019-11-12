@@ -8,7 +8,7 @@ const colors = ["black", "red"];
 const suits = [
   {
     shape: "diamond",
-    color: "black"
+    color: "red"
   },
   {
     shape: "club",
@@ -16,7 +16,7 @@ const suits = [
   },
   {
     shape: "heart",
-    color: "black"
+    color: "red"
   },
   {
     shape: "spade",
@@ -25,7 +25,6 @@ const suits = [
 ];
 
 const marks = [
-  "1",
   "2",
   "3",
   "4",
