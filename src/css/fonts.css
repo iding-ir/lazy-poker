@@ -1,26 +1,13 @@
 @font-face {
-	font-family: 'MadsLatin';
+	font-family: 'Roboto';
 	font-style: normal;
 	font-weight: normal;
 	src:
-		url('/assets/fonts/roboto-v20-latin-regular.woff2') format('woff2'),
-		url('/assets/fonts/roboto-v20-latin-regular.woff') format('woff'),
-		url('/assets/fonts/roboto-v20-latin-regular.ttf') format('ttf');
-}
-
-@font-face {
-	font-family: 'MadsFarsi';
-	font-style: normal;
-	font-weight: normal;
-	src:
-		url('/assets/fonts/IRANSansWeb-Light-SWD.woff2') format('woff2'),
-		url('/assets/fonts/IRANSansWeb-Light-SWD.woff') format('woff');
+		url('../assets/fonts/roboto-v20-latin-regular.woff2') format('woff2'),
+		url('../assets/fonts/roboto-v20-latin-regular.woff') format('woff'),
+		url('../assets/fonts/roboto-v20-latin-regular.ttf') format('ttf');
 }
 
 html * {
-	font-family: MadsLatin;
-}
-
-html[lang="fa"] * {
-	font-family: MadsFarsi;
+	font-family: Roboto;
 }

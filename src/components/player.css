@@ -3,6 +3,8 @@
 }
 
 .app-player-name {
+    font-size: 2rem;
+    color: #263238;
     padding: 1rem 0;
 }
 

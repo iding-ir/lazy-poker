@@ -22,7 +22,9 @@
 
 .app-dashboard {
   padding: 1rem;
+  background-color: #CFD8DC;
   border-bottom: 3px solid #9C27B0;
+  box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.30);
 }
 
 .app-dashboard button {
@@ -31,6 +33,7 @@
   color: #FFFFFF;
   background-color: #9C27B0;
   border-radius: 4px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.50);
 }
 
 .app-players {
