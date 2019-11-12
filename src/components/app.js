@@ -73,6 +73,9 @@ const stages = [
   }
 ];
 
+const flushCondition = 5;
+const straightCondition = 5;
+
 class App extends Component {
   state = {
     stage: 0,
@@ -180,29 +183,70 @@ class App extends Component {
   calculateRound = () => {
     this.state.players.filter((player, index) => {
       let flush = this.checkFlush(player);
+      let straight = this.checkStraight(player);
 
       if (flush) console.log(player.name + " flushed with " + flush.color);
+      if (straight)
+        console.log(
+          `${player.name} is straight from ${straight.from} to ${straight.to}`
+        );
     });
   };
 
   checkFlush = player => {
     const allCards = [...player.cards, ...this.state.deck];
     const colorExtract = allCards.map(card => card.suit.color);
-    const colorCounts = [];
+    let flushed = false;
 
     colors.forEach((color, index) => {
       const count = colorExtract.reduce((total, cardColor) => {
         return cardColor === color ? total + 1 : total;
       }, 0);
 
-      colorCounts.push({ color, count });
+      if (count >= flushCondition) flushed = { color, count };
     });
 
-    const flushed = colorCounts.filter((item, index) => {
-      return item.count >= 5;
+    return flushed;
+  };
+
+  checkStraight = player => {
+    let allCards = [...player.cards, ...this.state.deck];
+    let isStraight = false;
+
+    let allMarks = allCards.map(item => item.mark);
+
+    let uniqueMarks = allMarks.filter(
+      (item, index) => allMarks.indexOf(item) === index
+    );
+
+    uniqueMarks.sort((a, b) => marks.indexOf(a) - marks.indexOf(b));
+
+    uniqueMarks.forEach((card, index) => {
+      let split = uniqueMarks.slice(index, index + straightCondition);
+
+      if (split.length < straightCondition) return;
+
+      let currentSum = split.reduce((total, item) => {
+        return total + marks.indexOf(item) - marks.indexOf(split[0]);
+      }, 0);
+
+      const correctSum = (function(a, n) {
+        let sum = 0;
+
+        for (let i = a; i < a + n; i++) sum += i;
+
+        return sum;
+      })(0, straightCondition);
+
+      if (currentSum === correctSum) {
+        const from = split[0];
+        const to = split[split.length - 1];
+
+        isStraight = { from, to };
+      }
     });
 
-    return flushed.length ? flushed[0] : false;
+    return isStraight;
   };
 
   dealToDeck = n => {
