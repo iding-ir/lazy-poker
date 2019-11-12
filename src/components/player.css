@@ -1,0 +1,11 @@
+.app-player {
+    margin-bottom: 1rem;
+}
+
+.app-player-name {
+    padding: 1rem 0;
+}
+
+.app-cards {
+    display: flex;
+}
