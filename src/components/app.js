@@ -177,7 +177,33 @@ class App extends Component {
     this.setState({ players });
   };
 
-  calculateRound = () => {};
+  calculateRound = () => {
+    this.state.players.filter((player, index) => {
+      let flush = this.checkFlush(player);
+
+      if (flush) console.log(player.name + " flushed with " + flush.color);
+    });
+  };
+
+  checkFlush = player => {
+    const allCards = [...player.cards, ...this.state.deck];
+    const colorExtract = allCards.map(card => card.suit.color);
+    const colorCounts = [];
+
+    colors.forEach((color, index) => {
+      const count = colorExtract.reduce((total, cardColor) => {
+        return cardColor === color ? total + 1 : total;
+      }, 0);
+
+      colorCounts.push({ color, count });
+    });
+
+    const flushed = colorCounts.filter((item, index) => {
+      return item.count >= 5;
+    });
+
+    return flushed.length ? flushed[0] : false;
+  };
 
   dealToDeck = n => {
     const deck = [...this.state.deck];
