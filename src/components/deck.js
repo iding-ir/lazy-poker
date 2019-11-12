@@ -7,12 +7,12 @@ class Deck extends Component {
   render() {
     return (
       <div className="app-deck">
-        <h2 className="app-deck-title">{this.props.title}</h2>
+        <h2 className="app-deck-title">Current state: {this.props.title}</h2>
 
         <div className="app-cards">
-          {/* {this.props.deck.cards.map((card, index) => {
+          {this.props.deck.map((card, index) => {
             return <Card key={index} card={card} />;
-          })} */}
+          })}
         </div>
       </div>
     );

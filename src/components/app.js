@@ -3,8 +3,8 @@ import "./app.css";
 import Player from "./player";
 import Deck from "./deck";
 
-const stages = ["New Round", "Preflop", "Flop", "Turn", "River", "Result"];
 const spots = ["heart", "spade", "diamond", "clubs"];
+
 const marks = [
   "1",
   "2",
@@ -20,6 +20,39 @@ const marks = [
   "Q",
   "K",
   "A"
+];
+
+const stages = [
+  {
+    slug: "new-round",
+    title: "New Round",
+    button: "Deal Preflop"
+  },
+  {
+    slug: "preflop",
+    title: "Preflop",
+    button: "Deal Flop"
+  },
+  {
+    slug: "flop",
+    title: "Flop",
+    button: "Deal Turn"
+  },
+  {
+    slug: "turn",
+    title: "Turn",
+    button: "Deal River"
+  },
+  {
+    slug: "river",
+    title: "River",
+    button: "See Result"
+  },
+  {
+    slug: "result",
+    title: "Result",
+    button: "New Round"
+  }
 ];
 
 class App extends Component {
@@ -44,13 +77,15 @@ class App extends Component {
     return (
       <div className="app">
         <div className="app-dashboard">
-          <button onClick={this.handleDeal}>{this.getDealButtonText()}</button>
+          <button onClick={this.handleDeal}>
+            {stages[this.state.stage].button}
+          </button>
         </div>
 
         <div>
           <Deck
             stage={this.state.stage}
-            title={stages[this.state.stage]}
+            title={stages[this.state.stage].title}
             deck={this.state.deck}
           />
         </div>
@@ -64,45 +99,33 @@ class App extends Component {
     );
   }
 
-  getDealButtonText = () => {
-    const labels = [
-      "Deal Preflop",
-      "Deal Flop",
-      "Deal Turn",
-      "Deal River",
-      "Calculate",
-      "Refresh"
-    ];
-
-    return labels[this.state.stage];
-  };
-
   handleDeal = () => {
     const stage =
       this.state.stage + 1 === stages.length ? 0 : this.state.stage + 1;
 
-    this.setState({
-      stage: stage
-    });
+    this.setState({ stage });
 
-    switch (stage) {
-      case 0:
+    switch (stages[stage].slug) {
+      case "new-round":
         this.refreshRound();
         break;
-      case 1:
+      case "preflop":
         this.dealPreFlop();
         break;
-      case 2:
+      case "flop":
         this.dealFlop();
         break;
-      case 3:
+      case "turn":
         this.dealTurn();
         break;
-      case 4:
+      case "river":
         this.dealRiver();
         break;
-      default:
+      case "result":
         this.calculateRound();
+        break;
+      default:
+      // default
     }
   };
 
@@ -116,7 +139,7 @@ class App extends Component {
     this.setState({
       stage: 0,
       deck: [],
-      players: players
+      players
     });
   };
 
@@ -124,8 +147,6 @@ class App extends Component {
     const cardsPerUser = 2;
 
     const players = this.state.players.map((player, index) => {
-      player.cards = [];
-
       for (let i = 0; i < cardsPerUser; i++) {
         let mark = marks[Math.floor(Math.random() * marks.length)];
         let spot = spots[Math.floor(Math.random() * spots.length)];
@@ -136,15 +157,35 @@ class App extends Component {
       return player;
     });
 
-    this.setState({
-      players: players
-    });
+    this.setState({ players });
   };
 
-  dealFlop = () => {};
-  dealTurn = () => {};
-  dealRiver = () => {};
+  dealFlop = () => {
+    this.dealToDeck(3);
+  };
+
+  dealTurn = () => {
+    this.dealToDeck(1);
+  };
+
+  dealRiver = () => {
+    this.dealToDeck(1);
+  };
+
   calculateRound = () => {};
+
+  dealToDeck = n => {
+    const deck = [...this.state.deck];
+
+    for (let i = 0; i < n; i++) {
+      let mark = marks[Math.floor(Math.random() * marks.length)];
+      let spot = spots[Math.floor(Math.random() * spots.length)];
+
+      deck.push({ mark, spot });
+    }
+
+    this.setState({ deck });
+  };
 }
 
 export default App;
