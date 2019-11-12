@@ -4,7 +4,8 @@ import "./card.css";
 class Card extends Component {
   state = {};
   render() {
-    const className = "app-icon-" + this.props.card.spot;
+    const className = "app-icon-" + this.props.card.suit.shape;
+
     return (
       <div className="app-card">
         <div>{this.props.card.mark}</div>

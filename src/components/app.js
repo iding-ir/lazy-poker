@@ -3,7 +3,26 @@ import "./app.css";
 import Player from "./player";
 import Deck from "./deck";
 
-const spots = ["heart", "spade", "diamond", "clubs"];
+const colors = ["black", "red"];
+
+const suits = [
+  {
+    shape: "diamond",
+    color: "black"
+  },
+  {
+    shape: "club",
+    color: "black"
+  },
+  {
+    shape: "heart",
+    color: "black"
+  },
+  {
+    shape: "spade",
+    color: "black"
+  }
+];
 
 const marks = [
   "1",
@@ -113,13 +132,13 @@ class App extends Component {
         this.dealPreFlop();
         break;
       case "flop":
-        this.dealFlop();
+        this.dealToDeck(3);
         break;
       case "turn":
-        this.dealTurn();
+        this.dealToDeck(1);
         break;
       case "river":
-        this.dealRiver();
+        this.dealToDeck(1);
         break;
       case "result":
         this.calculateRound();
@@ -148,10 +167,9 @@ class App extends Component {
 
     const players = this.state.players.map((player, index) => {
       for (let i = 0; i < cardsPerUser; i++) {
-        let mark = marks[Math.floor(Math.random() * marks.length)];
-        let spot = spots[Math.floor(Math.random() * spots.length)];
+        const card = this.getRandomCard();
 
-        player.cards.push({ mark, spot });
+        player.cards.push(card);
       }
 
       return player;
@@ -160,31 +178,25 @@ class App extends Component {
     this.setState({ players });
   };
 
-  dealFlop = () => {
-    this.dealToDeck(3);
-  };
-
-  dealTurn = () => {
-    this.dealToDeck(1);
-  };
-
-  dealRiver = () => {
-    this.dealToDeck(1);
-  };
-
   calculateRound = () => {};
 
   dealToDeck = n => {
     const deck = [...this.state.deck];
 
     for (let i = 0; i < n; i++) {
-      let mark = marks[Math.floor(Math.random() * marks.length)];
-      let spot = spots[Math.floor(Math.random() * spots.length)];
+      const card = this.getRandomCard();
 
-      deck.push({ mark, spot });
+      deck.push(card);
     }
 
     this.setState({ deck });
+  };
+
+  getRandomCard = () => {
+    let mark = marks[Math.floor(Math.random() * marks.length)];
+    let suit = suits[Math.floor(Math.random() * suits.length)];
+
+    return { mark, suit };
   };
 }
 
