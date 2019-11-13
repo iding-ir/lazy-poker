@@ -40,6 +40,14 @@ const marks = [
   "A"
 ];
 
+const undealtCards = [];
+
+marks.forEach(mark => {
+  suits.forEach(suit => {
+    undealtCards.push({ mark, suit });
+  });
+});
+
 const stages = [
   {
     slug: "new-round",
@@ -157,6 +165,12 @@ class App extends Component {
       return player;
     });
 
+    marks.forEach(mark => {
+      suits.forEach(suit => {
+        undealtCards.push({ mark, suit });
+      });
+    });
+
     this.setState({
       stage: 0,
       deck: [],
@@ -185,7 +199,9 @@ class App extends Component {
       let flush = this.checkFlush(player);
       let straight = this.checkStraight(player);
       let highCard = this.checkHighCard(player);
-      let onePair = this.checkOnePair(player);
+      let pair = this.getCardOf(player, 2);
+      let three = this.getCardOf(player, 3);
+      let quad = this.getCardOf(player, 4);
 
       if (flush) console.log(`${player.name} flushed with ${flush.color}`);
 
@@ -197,7 +213,29 @@ class App extends Component {
       if (highCard)
         console.log(`${player.name} has high card ${highCard.mark}`);
 
-      if (onePair) console.log(`${player.name} has a pair of ${highCard.mark}`);
+      if (pair.length) {
+        let text = pair.map(mark => mark + "'s");
+
+        text = text.join(" and ");
+
+        console.log(`${player.name} has pair(s) of ${text}`);
+      }
+
+      if (three.length) {
+        let text = three.map(mark => mark + "'s");
+
+        text = text.join(" and ");
+
+        console.log(`${player.name} has three-of-a-kind(s) of ${text}`);
+      }
+
+      if (quad.length) {
+        let text = quad.map(mark => mark + "'s");
+
+        text = text.join(" and ");
+
+        console.log(`${player.name} has quad(s) of ${text}`);
+      }
     });
   };
 
@@ -209,21 +247,30 @@ class App extends Component {
     return allCards[allCards.length - 1];
   };
 
-  checkOnePair = player => {
-    const allCards = [...player.cards, ...this.state.deck];
-    let hasOnePair = false;
+  groupByMark = cards => {
+    let groups = {};
 
-    allCards.forEach(firstCard => {
-      allCards.forEach(secondCard => {
-        if (
-          firstCard.mark === secondCard.mark &&
-          firstCard.suit.shape !== secondCard.suit.shape
-        )
-          hasOnePair = { ...firstCard };
-      });
+    cards.forEach(card => {
+      groups[card.mark] = groups[card.mark] || [];
+
+      groups[card.mark].push(card);
     });
 
-    return hasOnePair;
+    return groups;
+  };
+
+  getCardOf = (player, length) => {
+    const cards = [...player.cards, ...this.state.deck];
+    let groups = this.groupByMark(cards);
+    let selected = [];
+
+    for (let key in groups) {
+      let value = groups[key];
+
+      if (value.length === length) selected.push(key);
+    }
+
+    return selected;
   };
 
   checkFlush = player => {
@@ -295,10 +342,11 @@ class App extends Component {
   };
 
   getRandomCard = () => {
-    let mark = marks[Math.floor(Math.random() * marks.length)];
-    let suit = suits[Math.floor(Math.random() * suits.length)];
+    let location = Math.floor(Math.random() * undealtCards.length);
 
-    return { mark, suit };
+    let pickedCard = undealtCards.splice(location, 1)[0];
+
+    return pickedCard;
   };
 }
 
