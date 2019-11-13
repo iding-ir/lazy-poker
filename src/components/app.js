@@ -2,89 +2,24 @@ import React, { Component } from "react";
 import "./app.css";
 import Player from "./player";
 import Deck from "./deck";
-
-const colors = ["black", "red"];
-
-const suits = [
-  {
-    shape: "diamond",
-    color: "red"
-  },
-  {
-    shape: "club",
-    color: "black"
-  },
-  {
-    shape: "heart",
-    color: "red"
-  },
-  {
-    shape: "spade",
-    color: "black"
-  }
-];
-
-const marks = [
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "J",
-  "Q",
-  "K",
-  "A"
-];
-
-const undealtCards = [];
-
-marks.forEach(mark => {
-  suits.forEach(suit => {
-    undealtCards.push({ mark, suit });
-  });
-});
-
-const stages = [
-  {
-    slug: "new-round",
-    title: "New Round",
-    button: "Deal Preflop"
-  },
-  {
-    slug: "preflop",
-    title: "Preflop",
-    button: "Deal Flop"
-  },
-  {
-    slug: "flop",
-    title: "Flop",
-    button: "Deal Turn"
-  },
-  {
-    slug: "turn",
-    title: "Turn",
-    button: "Deal River"
-  },
-  {
-    slug: "river",
-    title: "River",
-    button: "See Result"
-  },
-  {
-    slug: "result",
-    title: "Result",
-    button: "New Round"
-  }
-];
-
-const flushCondition = 5;
-const straightCondition = 5;
+import {
+  colors,
+  suits,
+  marks,
+  straightCondition,
+  flushCondition,
+  stages
+} from "./definitions";
 
 class App extends Component {
+  constructor(props) {
+    super();
+
+    this.populateUndealtCards();
+  }
+
+  undealtCards = [];
+
   state = {
     stage: 0,
     deck: [],
@@ -128,6 +63,14 @@ class App extends Component {
     );
   }
 
+  populateUndealtCards = () => {
+    marks.forEach(mark => {
+      suits.forEach(suit => {
+        this.undealtCards.push({ mark, suit });
+      });
+    });
+  };
+
   handleDeal = () => {
     const stage =
       this.state.stage + 1 === stages.length ? 0 : this.state.stage + 1;
@@ -167,7 +110,7 @@ class App extends Component {
 
     marks.forEach(mark => {
       suits.forEach(suit => {
-        undealtCards.push({ mark, suit });
+        this.undealtCards.push({ mark, suit });
       });
     });
 
@@ -342,9 +285,9 @@ class App extends Component {
   };
 
   getRandomCard = () => {
-    let location = Math.floor(Math.random() * undealtCards.length);
+    let location = Math.floor(Math.random() * this.undealtCards.length);
 
-    let pickedCard = undealtCards.splice(location, 1)[0];
+    let pickedCard = this.undealtCards.splice(location, 1)[0];
 
     return pickedCard;
   };
