@@ -73,7 +73,7 @@ class App extends Component {
       suits.forEach(suit => {
         let owner = "dealer";
 
-        dealer.push({ mark, suit, owner });
+        dealer.push({ mark, ...suit, owner });
       });
     });
 
@@ -290,9 +290,9 @@ class App extends Component {
     let groups = {};
 
     cards.forEach(card => {
-      groups[card.suit.shape] = groups[card.suit.shape] || [];
+      groups[card.shape] = groups[card.shape] || [];
 
-      groups[card.suit.shape].push(card);
+      groups[card.shape].push(card);
     });
 
     return groups;
@@ -302,9 +302,9 @@ class App extends Component {
     let groups = {};
 
     cards.forEach(card => {
-      groups[card.suit.color] = groups[card.suit.color] || [];
+      groups[card.color] = groups[card.color] || [];
 
-      groups[card.suit.color].push(card);
+      groups[card.color].push(card);
     });
 
     return groups;
