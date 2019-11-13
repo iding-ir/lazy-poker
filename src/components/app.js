@@ -176,13 +176,15 @@ class App extends Component {
 
       let quads = this.getSimilarCardsByMark(cards, 4);
 
-      if (quads.length) {
-        quads.forEach(item => {
-          console.log(
-            `<${player.name}> has ${item.count} of a kind: ${item.mark}'s.`,
-            item.cards
-          );
+      if (quads.length >= 1) {
+        quads.sort((a, b) => {
+          return marks.indexOf(b.mark) - marks.indexOf(a.mark);
         });
+
+        let first = quads[0];
+        let text = `<${player.name}> has a quad of ${first.mark}'s`;
+
+        console.log(text, first.cards);
 
         return;
       }
@@ -190,9 +192,10 @@ class App extends Component {
       let fullhouseToaks = this.getSimilarCardsByMark(cards, 3);
       let fullhousepairs = this.getSimilarCardsByMark(cards, 2);
 
-      if (fullhouseToaks.length >= 1 && fullhousepairs.length >= 1) {
-        let text = `<${player.name}> has a full-house of `;
-
+      if (
+        (fullhouseToaks.length === 1 && fullhousepairs.length >= 1) ||
+        fullhouseToaks.length >= 2
+      ) {
         fullhouseToaks.sort((a, b) => {
           return marks.indexOf(b.mark) - marks.indexOf(a.mark);
         });
@@ -201,10 +204,12 @@ class App extends Component {
           return marks.indexOf(b.mark) - marks.indexOf(a.mark);
         });
 
-        text =
-          text + `${fullhouseToaks[0].mark}'s over ${fullhousepairs[0].mark}'s`;
+        let first = fullhouseToaks[0];
+        let second =
+          fullhouseToaks.length >= 2 ? fullhouseToaks[1] : fullhousepairs[0];
+        let text = `<${player.name}> has a full-house of ${first.mark}'s over ${second.mark}'s`;
 
-        console.log(text);
+        console.log(text, first.cards, second.cards);
 
         return;
       }
@@ -212,15 +217,14 @@ class App extends Component {
       let toaks = this.getSimilarCardsByMark(cards, 3);
 
       if (toaks.length >= 1) {
-        let text = `<${player.name}> has three-of-a-kind of `;
-
         toaks.sort((a, b) => {
           return marks.indexOf(b.mark) - marks.indexOf(a.mark);
         });
 
-        text = text + `${toaks[0].mark}'s`;
+        let first = toaks[0];
+        let text = `<${player.name}> has a three-of-a-kind of ${first.mark}'s`;
 
-        console.log(text);
+        console.log(text, first.cards);
 
         return;
       }
@@ -228,52 +232,46 @@ class App extends Component {
       let pairs = this.getSimilarCardsByMark(cards, 2);
 
       if (pairs.length >= 2) {
-        let text = `<${player.name}> has two pairs of `;
-        let array = [];
-
         pairs.sort((a, b) => {
           return marks.indexOf(b.mark) - marks.indexOf(a.mark);
         });
 
-        pairs.slice(0, 2).forEach(item => {
-          array.push(`${item.mark}'s`);
-        });
+        let first = pairs[0];
+        let second = pairs[1];
+        let text = `<${player.name}> has two pairs of ${first.mark}'s and ${second.mark}'s`;
 
-        text = text + array.join(" and ");
-
-        console.log(text);
+        console.log(text, first.cards, second.cards);
 
         return;
       }
 
       if (pairs.length === 1) {
-        let pair = pairs[0];
+        let first = pairs[0];
+        let text = `<${player.name}> has a pair: ${first.mark}'s.`;
 
-        let text = `<${player.name}> has a pair: ${pair.mark}'s.`;
-
-        console.log(text, pair.cards);
+        console.log(text, first.cards);
 
         return;
       }
 
-      let highCard = this.checkHighestCard(cards, player);
+      let highCard = this.checkHighCard(cards, player);
 
       if (highCard) {
         let text = `<${player.name}> has high card ${highCard.mark}`;
 
-        console.log(text);
+        console.log(text, highCard);
 
         return;
       }
     });
   };
 
-  checkHighestCard = cards => {
+  checkHighCard = cards => {
     cards.sort((a, b) => marks.indexOf(b.mark) - marks.indexOf(a.mark));
 
-    let highestCard = cards[0];
+    let highCard = cards[0];
 
-    return highestCard;
+    return highCard;
   };
 
   groupByMark = cards => {
