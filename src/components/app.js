@@ -184,13 +184,26 @@ class App extends Component {
     this.state.players.filter((player, index) => {
       let flush = this.checkFlush(player);
       let straight = this.checkStraight(player);
+      let highCard = this.checkHighCard(player);
 
-      if (flush) console.log(player.name + " flushed with " + flush.color);
+      if (flush) console.log(`${player.name} flushed with ${flush.color}`);
+
       if (straight)
         console.log(
           `${player.name} is straight from ${straight.from} to ${straight.to}`
         );
+
+      if (highCard)
+        console.log(`${player.name} has high card ${highCard.mark}`);
     });
+  };
+
+  checkHighCard = player => {
+    const allCards = [...player.cards, ...this.state.deck];
+
+    allCards.sort((a, b) => marks.indexOf(a.mark) - marks.indexOf(b.mark));
+
+    return allCards[allCards.length - 1];
   };
 
   checkFlush = player => {
