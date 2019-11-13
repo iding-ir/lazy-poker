@@ -14,13 +14,14 @@ import {
 class App extends Component {
   constructor(props) {
     super();
+  }
 
+  componentDidMount() {
     this.populateUndealtCards();
   }
 
-  undealtCards = [];
-
   state = {
+    undealtCards: [],
     stage: 0,
     deck: [],
     players: [
@@ -64,11 +65,15 @@ class App extends Component {
   }
 
   populateUndealtCards = () => {
+    let undealtCards = [];
+
     marks.forEach(mark => {
       suits.forEach(suit => {
-        this.undealtCards.push({ mark, suit });
+        undealtCards.push({ mark, suit });
       });
     });
+
+    this.setState({ undealtCards });
   };
 
   handleDeal = () => {
@@ -108,11 +113,7 @@ class App extends Component {
       return player;
     });
 
-    marks.forEach(mark => {
-      suits.forEach(suit => {
-        this.undealtCards.push({ mark, suit });
-      });
-    });
+    this.populateUndealtCards();
 
     this.setState({
       stage: 0,
@@ -285,9 +286,9 @@ class App extends Component {
   };
 
   getRandomCard = () => {
-    let location = Math.floor(Math.random() * this.undealtCards.length);
+    let location = Math.floor(Math.random() * this.state.undealtCards.length);
 
-    let pickedCard = this.undealtCards.splice(location, 1)[0];
+    let pickedCard = this.state.undealtCards.splice(location, 1)[0];
 
     return pickedCard;
   };
