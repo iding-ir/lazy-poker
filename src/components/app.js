@@ -47,7 +47,7 @@ class App extends Component {
 
         <div className="app-tips">See results in browser console</div>
 
-        <div>
+        <div className="app-table">
           <Deck
             stage={this.state.stage}
             title={stages[this.state.stage].title}
@@ -140,7 +140,7 @@ class App extends Component {
   };
 
   calculateRound = () => {
-    this.state.players.filter((player, index) => {
+    this.state.players.forEach((player, index) => {
       let flush = this.checkFlush(player);
       let straight = this.checkStraight(player);
       let highCard = this.checkHighCard(player);
