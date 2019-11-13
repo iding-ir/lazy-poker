@@ -185,6 +185,7 @@ class App extends Component {
       let flush = this.checkFlush(player);
       let straight = this.checkStraight(player);
       let highCard = this.checkHighCard(player);
+      let onePair = this.checkOnePair(player);
 
       if (flush) console.log(`${player.name} flushed with ${flush.color}`);
 
@@ -195,6 +196,8 @@ class App extends Component {
 
       if (highCard)
         console.log(`${player.name} has high card ${highCard.mark}`);
+
+      if (onePair) console.log(`${player.name} has a pair of ${highCard.mark}`);
     });
   };
 
@@ -204,6 +207,23 @@ class App extends Component {
     allCards.sort((a, b) => marks.indexOf(a.mark) - marks.indexOf(b.mark));
 
     return allCards[allCards.length - 1];
+  };
+
+  checkOnePair = player => {
+    const allCards = [...player.cards, ...this.state.deck];
+    let hasOnePair = false;
+
+    allCards.forEach(firstCard => {
+      allCards.forEach(secondCard => {
+        if (
+          firstCard.mark === secondCard.mark &&
+          firstCard.suit.shape !== secondCard.suit.shape
+        )
+          hasOnePair = { ...firstCard };
+      });
+    });
+
+    return hasOnePair;
   };
 
   checkFlush = player => {
