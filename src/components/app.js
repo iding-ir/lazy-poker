@@ -12,14 +12,6 @@ import {
 } from "./definitions";
 
 class App extends Component {
-  constructor(props) {
-    super();
-  }
-
-  componentDidMount() {
-    this.populateUndealtCards();
-  }
-
   state = {
     undealtCards: [],
     stage: 0,
@@ -37,6 +29,10 @@ class App extends Component {
       }
     ]
   };
+
+  componentDidMount() {
+    this.populateUndealtCards();
+  }
 
   render() {
     return (
