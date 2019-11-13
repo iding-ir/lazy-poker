@@ -13,8 +13,8 @@ import {
 
 class App extends Component {
   state = {
-    undealtCards: [],
     stage: 0,
+    dealer: [],
     deck: [],
     players: [
       {
@@ -31,7 +31,9 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.populateUndealtCards();
+    let dealer = this.populateDealer();
+
+    this.setState({ dealer });
   }
 
   render() {
@@ -42,6 +44,8 @@ class App extends Component {
             {stages[this.state.stage].button}
           </button>
         </div>
+
+        <div className="app-tips">See results in browser console</div>
 
         <div>
           <Deck
@@ -60,16 +64,33 @@ class App extends Component {
     );
   }
 
-  populateUndealtCards = () => {
-    let undealtCards = [];
+  populateDealer = () => {
+    let dealer = [];
 
     marks.forEach(mark => {
       suits.forEach(suit => {
-        undealtCards.push({ mark, suit });
+        dealer.push({ mark, suit });
       });
     });
 
-    this.setState({ undealtCards });
+    return dealer;
+  };
+
+  refreshRound = () => {
+    const players = this.state.players.map(player => {
+      player.cards = [];
+
+      return player;
+    });
+
+    let dealer = this.populateDealer();
+
+    this.setState({
+      stage: 0,
+      dealer,
+      deck: [],
+      players
+    });
   };
 
   handleDeal = () => {
@@ -100,22 +121,6 @@ class App extends Component {
       default:
       // default
     }
-  };
-
-  refreshRound = () => {
-    const players = this.state.players.map(player => {
-      player.cards = [];
-
-      return player;
-    });
-
-    this.populateUndealtCards();
-
-    this.setState({
-      stage: 0,
-      deck: [],
-      players
-    });
   };
 
   dealPreFlop = () => {
@@ -282,9 +287,9 @@ class App extends Component {
   };
 
   getRandomCard = () => {
-    let location = Math.floor(Math.random() * this.state.undealtCards.length);
+    let location = Math.floor(Math.random() * this.state.dealer.length);
 
-    let pickedCard = this.state.undealtCards.splice(location, 1)[0];
+    let pickedCard = this.state.dealer.splice(location, 1)[0];
 
     return pickedCard;
   };

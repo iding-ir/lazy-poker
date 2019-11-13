@@ -27,6 +27,12 @@
   box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.30);
 }
 
+.app-tips {
+  padding: 1rem;
+  font-size: 1.6rem;
+  color: #b71c1c;
+}
+
 .app-dashboard button {
   font-size: 2rem;
   padding: 0.5rem 1rem;
