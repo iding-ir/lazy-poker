@@ -1,5 +1,23 @@
 export const colors = ["black", "red"];
 
+export const shapes = ["diamond", "club", "heart", "spade"];
+
+export const marks = [
+  "A",
+  "K",
+  "Q",
+  "J"
+  // "10",
+  // "9",
+  // "8",
+  // "7",
+  // "6",
+  // "5",
+  // "4",
+  // "3",
+  // "2"
+];
+
 export const suits = [
   {
     shape: "diamond",
@@ -17,22 +35,6 @@ export const suits = [
     shape: "spade",
     color: "black"
   }
-];
-
-export const marks = [
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "J",
-  "Q",
-  "K",
-  "A"
 ];
 
 export const flushCondition = 5;

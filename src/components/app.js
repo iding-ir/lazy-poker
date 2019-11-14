@@ -4,8 +4,9 @@ import Player from "./player";
 import Deck from "./deck";
 import {
   colors,
-  suits,
+  shapes,
   marks,
+  suits,
   straightCondition,
   flushCondition,
   stages
@@ -147,7 +148,7 @@ class App extends Component {
 
   calculateRound = () => {
     this.state.players.forEach((player, index) => {
-      const cards = [...player.cards, ...this.state.deck];
+      const cards = this.sortCardsByMark([...player.cards, ...this.state.deck]);
 
       for (let i = cards.length; i >= flushCondition; i--) {
         let flush = this.getSimilarCardsByColor(cards, i);
@@ -164,7 +165,7 @@ class App extends Component {
         }
       }
 
-      let straight = this.checkStraight(player);
+      let straight = this.checkStraight(cards);
 
       if (straight) {
         console.log(
@@ -177,10 +178,6 @@ class App extends Component {
       let quads = this.getSimilarCardsByMark(cards, 4);
 
       if (quads.length >= 1) {
-        quads.sort((a, b) => {
-          return marks.indexOf(b.mark) - marks.indexOf(a.mark);
-        });
-
         let first = quads[0];
         let text = `<${player.name}> has a quad of ${first.mark}'s`;
 
@@ -196,14 +193,6 @@ class App extends Component {
         (fullhouseToaks.length === 1 && fullhousepairs.length >= 1) ||
         fullhouseToaks.length >= 2
       ) {
-        fullhouseToaks.sort((a, b) => {
-          return marks.indexOf(b.mark) - marks.indexOf(a.mark);
-        });
-
-        fullhousepairs.sort((a, b) => {
-          return marks.indexOf(b.mark) - marks.indexOf(a.mark);
-        });
-
         let first = fullhouseToaks[0];
         let second =
           fullhouseToaks.length >= 2 ? fullhouseToaks[1] : fullhousepairs[0];
@@ -217,10 +206,6 @@ class App extends Component {
       let toaks = this.getSimilarCardsByMark(cards, 3);
 
       if (toaks.length >= 1) {
-        toaks.sort((a, b) => {
-          return marks.indexOf(b.mark) - marks.indexOf(a.mark);
-        });
-
         let first = toaks[0];
         let text = `<${player.name}> has a three-of-a-kind of ${first.mark}'s`;
 
@@ -232,10 +217,6 @@ class App extends Component {
       let pairs = this.getSimilarCardsByMark(cards, 2);
 
       if (pairs.length >= 2) {
-        pairs.sort((a, b) => {
-          return marks.indexOf(b.mark) - marks.indexOf(a.mark);
-        });
-
         let first = pairs[0];
         let second = pairs[1];
         let text = `<${player.name}> has two pairs of ${first.mark}'s and ${second.mark}'s`;
@@ -254,57 +235,57 @@ class App extends Component {
         return;
       }
 
-      let highCard = this.checkHighCard(cards, player);
+      let highCard = cards[0];
 
-      if (highCard) {
-        let text = `<${player.name}> has high card ${highCard.mark}`;
+      let text = `<${player.name}> has high card ${highCard.mark}`;
 
-        console.log(text, highCard);
-
-        return;
-      }
+      console.log(text, highCard);
     });
   };
 
-  checkHighCard = cards => {
-    cards.sort((a, b) => marks.indexOf(b.mark) - marks.indexOf(a.mark));
-
-    let highCard = cards[0];
-
-    return highCard;
-  };
-
   groupByMark = cards => {
-    let groups = {};
+    let groups = [];
 
-    cards.forEach(card => {
-      groups[card.mark] = groups[card.mark] || [];
+    marks.forEach(mark => {
+      let group = [];
 
-      groups[card.mark].push(card);
+      cards.forEach(card => {
+        if (card.mark === mark) group.push(card);
+      });
+
+      if (group.length) groups.push(group);
     });
 
     return groups;
   };
 
   groupByShape = cards => {
-    let groups = {};
+    let groups = [];
 
-    cards.forEach(card => {
-      groups[card.shape] = groups[card.shape] || [];
+    shapes.forEach(shape => {
+      let group = [];
 
-      groups[card.shape].push(card);
+      cards.forEach(card => {
+        if (card.shape === shape) group.push(card);
+      });
+
+      if (group.length) groups.push(group);
     });
 
     return groups;
   };
 
   groupByColor = cards => {
-    let groups = {};
+    let groups = [];
 
-    cards.forEach(card => {
-      groups[card.color] = groups[card.color] || [];
+    colors.forEach(color => {
+      let group = [];
 
-      groups[card.color].push(card);
+      cards.forEach(card => {
+        if (card.color === color) group.push(card);
+      });
+
+      if (group.length) groups.push(group);
     });
 
     return groups;
@@ -314,34 +295,14 @@ class App extends Component {
     let groups = this.groupByMark(cards);
     let selected = [];
 
-    for (let key in groups) {
-      let group = groups[key];
-
+    groups.forEach(group => {
       if (group.length === number)
         selected.push({
           count: number,
-          mark: key,
+          mark: group[0].mark,
           cards: group
         });
-    }
-
-    return selected;
-  };
-
-  getSimilarCardsByColor = (cards, number) => {
-    let groups = this.groupByColor(cards);
-    let selected = [];
-
-    for (let key in groups) {
-      let group = groups[key];
-
-      if (group.length === number)
-        selected.push({
-          count: number,
-          color: key,
-          cards: group
-        });
-    }
+    });
 
     return selected;
   };
@@ -350,25 +311,38 @@ class App extends Component {
     let groups = this.groupByShape(cards);
     let selected = [];
 
-    for (let key in groups) {
-      let group = groups[key];
-
+    groups.forEach(group => {
       if (group.length === number)
         selected.push({
           count: number,
-          shape: key,
+          shape: group[0].shape,
           cards: group
         });
-    }
+    });
 
     return selected;
   };
 
-  checkStraight = player => {
-    let allCards = [...player.cards, ...this.state.deck];
+  getSimilarCardsByColor = (cards, number) => {
+    let groups = this.groupByColor(cards);
+    let selected = [];
+
+    groups.forEach(group => {
+      if (group.length === number)
+        selected.push({
+          count: number,
+          color: group[0].color,
+          cards: group
+        });
+    });
+
+    return selected;
+  };
+
+  checkStraight = cards => {
     let isStraight = false;
 
-    let allMarks = allCards.map(item => item.mark);
+    let allMarks = cards.map(item => item.mark);
 
     let uniqueMarks = allMarks.filter(
       (item, index) => allMarks.indexOf(item) === index
@@ -428,7 +402,7 @@ class App extends Component {
 
   sortCardsByMark = cards => {
     return [...cards].sort((a, b) => {
-      return marks.indexOf(a.mark) - marks.indexOf(b.mark);
+      return marks.indexOf(b.mark) - marks.indexOf(a.mark);
     });
   };
 }
