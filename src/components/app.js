@@ -150,27 +150,25 @@ class App extends Component {
     this.state.players.forEach((player, index) => {
       const cards = this.sortCardsByMark([...player.cards, ...this.state.deck]);
 
-      for (let i = cards.length; i >= flushCondition; i--) {
-        let flush = this.getSimilarCardsByColor(cards, i);
+      let flush = this.checkFlush(cards);
+      console.log(flush);
 
-        if (flush.length) {
-          flush.forEach(item => {
-            console.log(
-              `<${player.name}> has a flush of ${item.color}.`,
-              item.cards
-            );
-          });
+      if (flush) {
+        let kick = flush[0].mark;
+        let color = flush[0].color;
+        let text = `<${player.name}> has flush of ${color} kicking to ${kick}`;
 
-          return;
-        }
+        console.log(text, flush);
+
+        return;
       }
 
       let straight = this.checkStraight(cards);
 
       if (straight) {
-        console.log(
-          `<${player.name}> is straight from ${straight.from} to ${straight.to}`
-        );
+        let text = `<${player.name}> is straight from ${straight.from} to ${straight.to}`;
+
+        console.log(text, straight.cards);
 
         return;
       }
@@ -259,38 +257,6 @@ class App extends Component {
     return groups;
   };
 
-  groupByShape = cards => {
-    let groups = [];
-
-    shapes.forEach(shape => {
-      let group = [];
-
-      cards.forEach(card => {
-        if (card.shape === shape) group.push(card);
-      });
-
-      if (group.length) groups.push(group);
-    });
-
-    return groups;
-  };
-
-  groupByColor = cards => {
-    let groups = [];
-
-    colors.forEach(color => {
-      let group = [];
-
-      cards.forEach(card => {
-        if (card.color === color) group.push(card);
-      });
-
-      if (group.length) groups.push(group);
-    });
-
-    return groups;
-  };
-
   getSimilarCardsByMark = (cards, number) => {
     let groups = this.groupByMark(cards);
     let selected = [];
@@ -307,36 +273,18 @@ class App extends Component {
     return selected;
   };
 
-  getSimilarCardsByShape = (cards, number) => {
-    let groups = this.groupByShape(cards);
-    let selected = [];
+  checkFlush = cards => {
+    let isFlush = false;
 
-    groups.forEach(group => {
-      if (group.length === number)
-        selected.push({
-          count: number,
-          shape: group[0].shape,
-          cards: group
-        });
+    colors.forEach(color => {
+      let match = cards.filter(card => {
+        return card.color === color;
+      });
+
+      if (match.length >= flushCondition) isFlush = match;
     });
 
-    return selected;
-  };
-
-  getSimilarCardsByColor = (cards, number) => {
-    let groups = this.groupByColor(cards);
-    let selected = [];
-
-    groups.forEach(group => {
-      if (group.length === number)
-        selected.push({
-          count: number,
-          color: group[0].color,
-          cards: group
-        });
-    });
-
-    return selected;
+    return isFlush;
   };
 
   checkStraight = cards => {
@@ -350,19 +298,19 @@ class App extends Component {
 
     uniqueMarks.sort((a, b) => marks.indexOf(a) - marks.indexOf(b));
 
-    uniqueMarks.forEach((card, index) => {
+    uniqueMarks.forEach((mark, index) => {
       let split = uniqueMarks.slice(index, index + straightCondition);
 
       if (split.length < straightCondition) return;
 
-      let currentSum = split.reduce((total, item) => {
+      const currentSum = split.reduce((total, item) => {
         return total + marks.indexOf(item) - marks.indexOf(split[0]);
       }, 0);
 
-      const correctSum = (function(a, n) {
+      const correctSum = (function(start, length) {
         let sum = 0;
 
-        for (let i = a; i < a + n; i++) sum += i;
+        for (let i = start; i < start + length; i++) sum += i;
 
         return sum;
       })(0, straightCondition);
@@ -370,8 +318,13 @@ class App extends Component {
       if (currentSum === correctSum) {
         const from = split[0];
         const to = split[split.length - 1];
+        const match = cards.filter(
+          card =>
+            marks.indexOf(card.mark) >= marks.indexOf(from) &&
+            marks.indexOf(card.mark) <= marks.indexOf(to)
+        );
 
-        isStraight = { from, to };
+        isStraight = { from, to, cards: match };
       }
     });
 
