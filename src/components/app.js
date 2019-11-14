@@ -151,7 +151,6 @@ class App extends Component {
       const cards = this.sortCardsByMark([...player.cards, ...this.state.deck]);
 
       let flush = this.checkFlush(cards);
-      console.log(flush);
 
       if (flush) {
         let kick = flush[0].mark;
@@ -165,10 +164,18 @@ class App extends Component {
 
       let straight = this.checkStraight(cards);
 
-      if (straight) {
-        let text = `<${player.name}> is straight from ${straight.from} to ${straight.to}`;
+      if (straight.isStraight) {
+        let from = straight.details.from;
+        let to = straight.details.to;
+        let cards = straight.details.cards;
+        let text = `<${player.name}> has a straight from ${from} to ${to}`;
 
-        console.log(text, straight.cards);
+        if (straight.isStraightFlush)
+          text = `<${player.name}> has a straight-flush from ${from} to ${to}`;
+        if (straight.isRoyalFlush)
+          text = `<${player.name}> has a royal-flush of ${cards[0].shape}s`;
+
+        console.log(text, cards);
 
         return;
       }
@@ -288,7 +295,12 @@ class App extends Component {
   };
 
   checkStraight = cards => {
-    let isStraight = false;
+    let result = {
+      isStraight: false,
+      isStraightFlush: false,
+      isRoyalFlush: false,
+      details: []
+    };
 
     let allMarks = cards.map(item => item.mark);
 
@@ -324,11 +336,21 @@ class App extends Component {
             marks.indexOf(card.mark) <= marks.indexOf(to)
         );
 
-        isStraight = { from, to, cards: match };
+        let shape = match[0].shape;
+
+        let check = match.every(card => card.shape === shape);
+
+        if (check) result.isStraightFlush = true;
+
+        if (result.isStraightFlush && match[0].mark === marks[marks.length - 1])
+          result.isRoyalFlush = true;
+
+        result.isStraight = true;
+        result.details = { from, to, cards: match };
       }
     });
 
-    return isStraight;
+    return result;
   };
 
   dealToDeck = n => {
