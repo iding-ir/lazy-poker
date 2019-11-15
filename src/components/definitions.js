@@ -44,31 +44,37 @@ export const stages = [
   {
     slug: "new-round",
     title: "New Round",
-    button: "Deal Preflop"
+    button: "Deal Preflop",
+    icon: "filter_2"
   },
   {
     slug: "preflop",
     title: "Preflop",
-    button: "Deal Flop"
+    button: "Deal Flop",
+    icon: "filter_3"
   },
   {
     slug: "flop",
     title: "Flop",
-    button: "Deal Turn"
+    button: "Deal Turn",
+    icon: "filter_1"
   },
   {
     slug: "turn",
     title: "Turn",
-    button: "Deal River"
+    button: "Deal River",
+    icon: "filter_1"
   },
   {
     slug: "river",
     title: "River",
-    button: "See Result"
+    button: "See Result",
+    icon: "flare"
   },
   {
     slug: "result",
     title: "Result",
-    button: "New Round"
+    button: "New Round",
+    icon: "refresh"
   }
 ];

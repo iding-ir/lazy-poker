@@ -1,52 +1,82 @@
-.app {
-  width: 100%;
+.app-container {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: [pad-start] 0 [start] 1fr [end] 0 [pad-end];
+  grid-template-rows: [header-start] auto [header-end controls-start] auto [controls-end deck-start] auto [deck-end players-start] 1fr [players-end];
   height: 100%;
+  /* background-color: yellow; */
 }
 
-.app-icon-mask {
-  position: relative;
+.app-header {
+  margin-bottom: 1rem;
+  grid-column: pad-start/pad-end;
+  grid-row: header-start/header-end;
+  /* background-color: red; */
 }
 
-/* Mask Icon */
-
-.app-icon-mask::before {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  transition: background-color 0.3s;
-  /* will-change: background-color; */
-}
-
-.app-dashboard {
+.app-controls {
   padding: 1rem;
-  background-color: #CFD8DC;
-  border-bottom: 3px solid #9C27B0;
-  box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.30);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  grid-column: start/end;
+  grid-row: controls-start/controls-end;
+  /* background-color: blue; */
 }
 
-.app-tips {
+.app-deck {
   padding: 1rem;
-  font-size: 1.6rem;
-  color: #b71c1c;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.20);
-}
-
-.app-dashboard button {
-  font-size: 2rem;
-  padding: 0.5rem 1rem;
-  color: #FFFFFF;
-  background-color: #9C27B0;
-  border-radius: 4px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.50);
-}
-
-.app-table {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.20);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  grid-column: start/end;
+  grid-row: deck-start/deck-end;
+  /* background-color: green; */
 }
 
 .app-players {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.20);
+  overflow: auto;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  grid-column: start/end;
+  grid-row: players-start/players-end;
+  /* background-color: purple; */
+}
+
+@media only screen and (min-width: 840px) {
+  .app-container {
+    grid-template-columns: [pad-start] 1rem [start] 1fr [end] 1rem [pad-end];
+    grid-template-rows: [header-start] auto [header-end controls-start] auto [controls-end deck-start] auto [deck-end players-start] 1fr [players-end];
+  }
+
+  .app-header {
+    grid-column: pad-start/pad-end;
+    grid-row: header-start/header-end;
+  }
+
+  .app-controls {
+    grid-column: start/end;
+    grid-row: controls-start/controls-end;
+  }
+
+  .app-deck {
+    grid-column: start/end;
+    grid-row: deck-start/deck-end;
+  }
+
+  .app-players {
+    grid-column: start/end;
+    grid-row: players-start/players-end;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .app-container {
+    grid-template-columns: [pad-start] 5rem [start] 1fr [end] 5rem [pad-end];
+    grid-template-rows: [header-start] auto [header-end controls-start] auto [controls-end deck-start] auto [deck-end players-start] 1fr [players-end];
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .app-container {
+    grid-template-columns: [pad-start] 10rem [start] 1fr [end] 10rem [pad-end];
+    grid-template-rows: [header-start] auto [header-end controls-start] auto [controls-end deck-start] auto [deck-end players-start] 1fr [players-end];
+  }
 }

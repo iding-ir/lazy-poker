@@ -1,0 +1,9 @@
+.logs {
+  float: right;
+  display: flex;
+  flex-direction: row;
+}
+
+.logs-trigger {
+  float: right;
+}

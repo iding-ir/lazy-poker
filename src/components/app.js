@@ -1,7 +1,12 @@
 import React, { Component } from "react";
+import $ from "jquery/dist/jquery";
+import "materialize-css/dist/css/materialize.min.css";
+import M from "materialize-css";
 import "./app.css";
-import Player from "./player";
+import Players from "./players";
 import Deck from "./deck";
+import Logs from "./logs";
+import Navbar from "./navbar";
 import {
   colors,
   shapes,
@@ -30,7 +35,8 @@ class App extends Component {
         cards: [],
         points: 0
       }
-    ]
+    ],
+    logs: []
   };
 
   componentDidMount() {
@@ -41,27 +47,31 @@ class App extends Component {
 
   render() {
     return (
-      <div className="app">
-        <div className="app-dashboard">
-          <button onClick={this.handleDeal}>
+      <div className="app-container">
+        <header className="app-header">
+          <Navbar />
+        </header>
+
+        <div className="app-controls blue-grey lighten-5">
+          <button
+            className="waves-effect waves-light btn-large"
+            onClick={this.handleDeal}
+          >
+            <i className="material-icons left">
+              {stages[this.state.stage].icon}
+            </i>
             {stages[this.state.stage].button}
           </button>
+
+          <Logs logs={this.state.logs} />
         </div>
 
-        <div className="app-tips">See results in browser console</div>
-
-        <div className="app-table">
-          <Deck
-            stage={this.state.stage}
-            title={stages[this.state.stage].title}
-            deck={this.state.deck}
-          />
+        <div className="app-deck blue-grey lighten-5">
+          <Deck deck={this.state.deck} />
         </div>
 
-        <div className="app-players">
-          {this.state.players.map((player, index) => {
-            return <Player key={index} player={player} />;
-          })}
+        <div className="app-players blue-grey lighten-5">
+          <Players players={this.state.players} />
         </div>
       </div>
     );
@@ -147,6 +157,8 @@ class App extends Component {
   };
 
   calculateRound = () => {
+    let logs = [...this.state.logs];
+
     this.state.players.forEach((player, index) => {
       const cards = this.sortCardsByMark([...player.cards, ...this.state.deck]);
 
@@ -155,9 +167,11 @@ class App extends Component {
       if (flush) {
         let kick = flush[0].mark;
         let color = flush[0].color;
-        let text = `<${player.name}> has flush of ${color} kicking to ${kick}`;
+        let text = `${player.name} has flush of ${color} kicking to ${kick}`;
 
         console.log(text, flush);
+
+        logs = this.addLog(logs, { text, icon: "insert_comment" });
 
         return;
       }
@@ -168,14 +182,16 @@ class App extends Component {
         let from = straight.details.from;
         let to = straight.details.to;
         let cards = straight.details.cards;
-        let text = `<${player.name}> has a straight from ${from} to ${to}`;
+        let text = `${player.name} has a straight from ${from} to ${to}`;
 
         if (straight.isStraightFlush)
-          text = `<${player.name}> has a straight-flush from ${from} to ${to}`;
+          text = `${player.name} has a straight-flush from ${from} to ${to}`;
         if (straight.isRoyalFlush)
-          text = `<${player.name}> has a royal-flush of ${cards[0].shape}s`;
+          text = `${player.name} has a royal-flush of ${cards[0].shape}s`;
 
         console.log(text, cards);
+
+        logs = this.addLog(logs, { text, icon: "insert_comment" });
 
         return;
       }
@@ -184,9 +200,11 @@ class App extends Component {
 
       if (quads.length >= 1) {
         let first = quads[0];
-        let text = `<${player.name}> has a quad of ${first.mark}'s`;
+        let text = `${player.name} has a quad of ${first.mark}'s`;
 
         console.log(text, first.cards);
+
+        logs = this.addLog(logs, { text, icon: "insert_comment" });
 
         return;
       }
@@ -201,9 +219,11 @@ class App extends Component {
         let first = fullhouseToaks[0];
         let second =
           fullhouseToaks.length >= 2 ? fullhouseToaks[1] : fullhousepairs[0];
-        let text = `<${player.name}> has a full-house of ${first.mark}'s over ${second.mark}'s`;
+        let text = `${player.name} has a full-house of ${first.mark}'s over ${second.mark}'s`;
 
         console.log(text, first.cards, second.cards);
+
+        logs = this.addLog(logs, { text, icon: "insert_comment" });
 
         return;
       }
@@ -212,9 +232,11 @@ class App extends Component {
 
       if (toaks.length >= 1) {
         let first = toaks[0];
-        let text = `<${player.name}> has a three-of-a-kind of ${first.mark}'s`;
+        let text = `${player.name} has a three-of-a-kind of ${first.mark}'s`;
 
         console.log(text, first.cards);
+
+        logs = this.addLog(logs, { text, icon: "insert_comment" });
 
         return;
       }
@@ -224,28 +246,36 @@ class App extends Component {
       if (pairs.length >= 2) {
         let first = pairs[0];
         let second = pairs[1];
-        let text = `<${player.name}> has two pairs of ${first.mark}'s and ${second.mark}'s`;
+        let text = `${player.name} has two pairs of ${first.mark}'s and ${second.mark}'s`;
 
         console.log(text, first.cards, second.cards);
+
+        logs = this.addLog(logs, { text, icon: "insert_comment" });
 
         return;
       }
 
       if (pairs.length === 1) {
         let first = pairs[0];
-        let text = `<${player.name}> has a pair: ${first.mark}'s.`;
+        let text = `${player.name} has a pair: ${first.mark}'s.`;
 
         console.log(text, first.cards);
+
+        logs = this.addLog(logs, { text, icon: "insert_comment" });
 
         return;
       }
 
       let highCard = cards[0];
 
-      let text = `<${player.name}> has high card ${highCard.mark}`;
+      let text = `${player.name} has high card ${highCard.mark}`;
 
       console.log(text, highCard);
+
+      logs = this.addLog(logs, { text, icon: "insert_comment" });
     });
+
+    this.setState({ logs });
   };
 
   groupByMark = cards => {
@@ -379,6 +409,14 @@ class App extends Component {
     return [...cards].sort((a, b) => {
       return marks.indexOf(b.mark) - marks.indexOf(a.mark);
     });
+  };
+
+  addLog = (logs, log) => {
+    logs.unshift({ text: log.text, icon: "insert_comment" });
+
+    M.toast({ html: log.text, displayLength: 10000 });
+
+    return logs;
   };
 }
 

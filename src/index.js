@@ -4,6 +4,7 @@ import "./css/reset.css";
 import "./css/fonts.css";
 import "./css/index.css";
 import App from "./components/app";
+import "./css/hacks.css";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(<App />, document.getElementById("root"));

@@ -1,0 +1,13 @@
+#toast-container {
+  top: auto !important;
+  right: 5% !important;
+  bottom: 5% !important;
+  z-index: 1001 !important;
+}
+
+@media only screen and (max-width: 600px) {
+  #toast-container {
+    min-width: 90% !important;
+    bottom: 5% !important;
+  }
+}
