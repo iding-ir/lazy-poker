@@ -37,6 +37,19 @@ export const suits = [
   }
 ];
 
+export const winningHands = [
+  "high-card",
+  "pair",
+  "two-pairs",
+  "three-of-a-kind",
+  "straight",
+  "flush",
+  "full-house",
+  "four-of-a-kind",
+  "straight-flush",
+  "royal-flush"
+];
+
 export const flushCondition = 5;
 export const straightCondition = 5;
 

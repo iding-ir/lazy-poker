@@ -7,7 +7,7 @@ class Card extends Component {
     const className = "cards-icon-" + this.props.card.shape;
 
     return (
-      <div className="cards-card">
+      <div className="cards-card" data-highlight={this.props.card.highlight}>
         <div>{this.props.card.mark}</div>
         <div className={className}></div>
         <div>{this.props.card.mark}</div>

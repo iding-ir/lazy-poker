@@ -13,6 +13,13 @@
   }
 }
 
+.players-player h6 {
+  display: flex;
+}
+
+.players-name {
+}
+
 .players-cards {
   display: flex;
   flex-direction: row;

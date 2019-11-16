@@ -14,6 +14,7 @@ import {
   suits,
   straightCondition,
   flushCondition,
+  winningHands,
   stages
 } from "./definitions";
 
@@ -23,16 +24,35 @@ class App extends Component {
     dealer: [],
     deck: [],
     players: [
+      // {
+      //   name: "Player 1",
+      //   id: "1",
+      //   winner: false,
+      //   cards: [],
+      //   bests: [],
+      //   result: {},
+      //   points: 0
+      // },
+      // {
+      //   name: "Player 2",
+      //   id: "2",
+      //   cards: [],
+      //   round: {
+      //     winner: false,
+      //     bests: [],
+      //     hand: undefined
+      //   },
+      //   points: 0
+      // },
       {
-        name: "Player 1",
-        id: "1",
+        name: "Player 3",
+        id: "3",
         cards: [],
-        points: 0
-      },
-      {
-        name: "Player 2",
-        id: "2",
-        cards: [],
+        round: {
+          winner: false,
+          bests: [],
+          hand: undefined
+        },
         points: 0
       }
     ],
@@ -158,9 +178,33 @@ class App extends Component {
 
   calculateRound = () => {
     let logs = [...this.state.logs];
+    let players = [...this.state.players];
 
-    this.state.players.forEach((player, index) => {
+    players.forEach((player, index) => {
       const cards = this.sortCardsByMark([...player.cards, ...this.state.deck]);
+
+      let straight = this.checkStraight(cards);
+
+      if (straight) {
+        let straightFlush = this.checkFlush(straight);
+
+        if (straightFlush) {
+          let from = straight[straight.length - 1].mark;
+          let to = straight[0].mark;
+          let hand =
+            to === marks[marks.length - 1] ? "royal-flush" : "straight-flush";
+          let text = `${player.name} has a ${hand} from ${from} to ${to}`;
+
+          player.round.bests = straight;
+          player.round.hand = hand;
+
+          console.log(text, straight);
+
+          logs = this.addLog(logs, { text, icon: "insert_comment" });
+
+          return;
+        }
+      }
 
       let flush = this.checkFlush(cards);
 
@@ -169,6 +213,9 @@ class App extends Component {
         let color = flush[0].color;
         let text = `${player.name} has flush of ${color} kicking to ${kick}`;
 
+        player.round.bests = flush;
+        player.round.hand = "flush";
+
         console.log(text, flush);
 
         logs = this.addLog(logs, { text, icon: "insert_comment" });
@@ -176,20 +223,15 @@ class App extends Component {
         return;
       }
 
-      let straight = this.checkStraight(cards);
-
-      if (straight.isStraight) {
-        let from = straight.details.from;
-        let to = straight.details.to;
-        let cards = straight.details.cards;
+      if (straight) {
+        let from = straight[straight.length - 1].mark;
+        let to = straight[0].mark;
         let text = `${player.name} has a straight from ${from} to ${to}`;
 
-        if (straight.isStraightFlush)
-          text = `${player.name} has a straight-flush from ${from} to ${to}`;
-        if (straight.isRoyalFlush)
-          text = `${player.name} has a royal-flush of ${cards[0].shape}s`;
+        player.round.bests = straight;
+        player.round.hand = "straight";
 
-        console.log(text, cards);
+        console.log(text, straight);
 
         logs = this.addLog(logs, { text, icon: "insert_comment" });
 
@@ -201,6 +243,9 @@ class App extends Component {
       if (quads.length >= 1) {
         let first = quads[0];
         let text = `${player.name} has a quad of ${first.mark}'s`;
+
+        player.round.bests = [...first.cards];
+        player.round.hand = "four-of-a-kind";
 
         console.log(text, first.cards);
 
@@ -221,6 +266,11 @@ class App extends Component {
           fullhouseToaks.length >= 2 ? fullhouseToaks[1] : fullhousepairs[0];
         let text = `${player.name} has a full-house of ${first.mark}'s over ${second.mark}'s`;
 
+        // let secondLeg = fullhousepairs[0] || fullhouseToaks[1];
+
+        // player.round.bests = [...fullhouseToaks[0], ...secondLeg];
+        player.round.hand = "full-house";
+
         console.log(text, first.cards, second.cards);
 
         logs = this.addLog(logs, { text, icon: "insert_comment" });
@@ -234,6 +284,9 @@ class App extends Component {
         let first = toaks[0];
         let text = `${player.name} has a three-of-a-kind of ${first.mark}'s`;
 
+        player.round.bests = [...first.cards];
+        player.round.hand = "three-of-a-kind";
+
         console.log(text, first.cards);
 
         logs = this.addLog(logs, { text, icon: "insert_comment" });
@@ -244,9 +297,12 @@ class App extends Component {
       let pairs = this.getSimilarCardsByMark(cards, 2);
 
       if (pairs.length >= 2) {
-        let first = pairs[0];
-        let second = pairs[1];
+        let first = pairs[pairs.length - 1];
+        let second = pairs[pairs.length - 2];
         let text = `${player.name} has two pairs of ${first.mark}'s and ${second.mark}'s`;
+
+        player.round.bests = [...first.cards, ...second.cards];
+        player.round.hand = "two-pairs";
 
         console.log(text, first.cards, second.cards);
 
@@ -259,6 +315,9 @@ class App extends Component {
         let first = pairs[0];
         let text = `${player.name} has a pair: ${first.mark}'s.`;
 
+        player.round.bests = [...first.cards];
+        player.round.hand = "pair";
+
         console.log(text, first.cards);
 
         logs = this.addLog(logs, { text, icon: "insert_comment" });
@@ -267,8 +326,10 @@ class App extends Component {
       }
 
       let highCard = cards[0];
-
       let text = `${player.name} has high card ${highCard.mark}`;
+
+      player.round.bests = [highCard];
+      player.round.hand = "high-card";
 
       console.log(text, highCard);
 
@@ -276,6 +337,147 @@ class App extends Component {
     });
 
     this.setState({ logs });
+
+    this.decideWinner(players);
+  };
+
+  decideWinner = players => {
+    console.log("players", players);
+
+    let ordered = [...players];
+    let winners = undefined;
+
+    ordered.sort((a, b) => {
+      return (
+        winningHands.indexOf(b.round.hand) - winningHands.indexOf(a.round.hand)
+      );
+    });
+
+    console.log("ordered", ordered);
+
+    let winningHand = ordered[0].round.hand;
+
+    console.log(winningHand);
+
+    let possibleWinners = players.filter(
+      player => player.round.hand === winningHand
+    );
+
+    console.log("possibleWinners", possibleWinners);
+
+    if (possibleWinners.length > 10) {
+      if (
+        winningHand === "high-card" ||
+        winningHand === "flush" ||
+        winningHand === "straight" ||
+        winningHand === "straight-flush" ||
+        winningHand === "royal-flush"
+      ) {
+        let cards = this.mergePlayersBests(possibleWinners);
+
+        let mark = this.sortCardsByMark(cards)[0].mark;
+
+        winners = this.playersHaveKicker(possibleWinners, mark);
+
+        if (winners.length === 0) winners = possibleWinners;
+      }
+
+      if (
+        winningHand === "pair" ||
+        winningHand === "three-of-a-kind" ||
+        winningHand === "four-of-a-kind"
+      ) {
+        let cards = this.mergePlayersBests(possibleWinners);
+
+        let mark = this.sortCardsByMark(cards)[0].mark;
+
+        winners = this.playersHaveKicker(possibleWinners, mark);
+
+        if (winners.length === 0) winners = possibleWinners;
+      }
+    } else {
+      winners = possibleWinners;
+    }
+
+    players.forEach(player => {
+      winners.forEach(winner => {
+        if (player.id === winner.id) {
+          player.points += 1;
+
+          player.round.winner = true;
+
+          this.highlight(player);
+        }
+      });
+    });
+
+    this.setState({ players });
+  };
+
+  playersHaveKicker = (players, mark) => {
+    let clone = [...players];
+
+    let result = clone.filter(player => {
+      return player.round.kicker.mark === mark;
+    });
+
+    return result;
+  };
+
+  mergePlayersBests = players => {
+    let result = players.reduce((total, player) => {
+      total.push(...player.round.bests);
+
+      return total;
+    }, []);
+
+    return result;
+  };
+
+  mergePlayersCards = players => {
+    let result = players.reduce((total, player) => {
+      total.push(...player.cards);
+
+      return total;
+    }, []);
+
+    return result;
+  };
+
+  mergePlayersHigh = players => {
+    let result = players.reduce((total, player) => {
+      total.push(player.round.kicker);
+
+      return total;
+    }, []);
+
+    return result;
+  };
+
+  highlight = player => {
+    player.cards.forEach((card, index) => {
+      player.round.bests.forEach((c, i) => {
+        if (JSON.stringify(card) === JSON.stringify(c))
+          player.cards[index].highlight = true;
+      });
+    });
+
+    let deck = [...this.state.deck];
+
+    deck.forEach((card, index) => {
+      player.round.bests.forEach((c, i) => {
+        if (JSON.stringify(card) === JSON.stringify(c))
+          deck[index].highlight = true;
+      });
+    });
+
+    let players = [...this.state.players];
+
+    players.forEach((p, i) => {
+      if (p.id === player.id) players[i] = player;
+    });
+
+    this.setState({ players });
   };
 
   groupByMark = cards => {
@@ -318,69 +520,49 @@ class App extends Component {
         return card.color === color;
       });
 
-      if (match.length >= flushCondition) isFlush = match;
+      if (match.length >= flushCondition) isFlush = match.slice(0, 5);
     });
 
     return isFlush;
   };
 
+  getUniqueCardsByMark = cards => {
+    let output = {};
+
+    cards.forEach(item => {
+      output[item.mark] = item;
+    });
+
+    output = Object.values(output);
+
+    output = this.sortCardsByMark(output);
+
+    return output;
+  };
+
   checkStraight = cards => {
-    let result = {
-      isStraight: false,
-      isStraightFlush: false,
-      isRoyalFlush: false,
-      details: []
-    };
+    let uniqueCards = this.getUniqueCardsByMark(cards);
+    let counter = 1;
+    let result = [];
 
-    let allMarks = cards.map(item => item.mark);
+    uniqueCards.forEach((card, index) => {
+      if (uniqueCards[index + 1] === undefined) return;
+      if (counter > straightCondition) return;
+      if (
+        uniqueCards[index + 1].mark ===
+        marks[marks.indexOf(uniqueCards[index].mark) - 1]
+      ) {
+        counter += 1;
 
-    let uniqueMarks = allMarks.filter(
-      (item, index) => allMarks.indexOf(item) === index
-    );
+        result.push(card);
+      } else {
+        counter = 1;
 
-    uniqueMarks.sort((a, b) => marks.indexOf(a) - marks.indexOf(b));
-
-    uniqueMarks.forEach((mark, index) => {
-      let split = uniqueMarks.slice(index, index + straightCondition);
-
-      if (split.length < straightCondition) return;
-
-      const currentSum = split.reduce((total, item) => {
-        return total + marks.indexOf(item) - marks.indexOf(split[0]);
-      }, 0);
-
-      const correctSum = (function(start, length) {
-        let sum = 0;
-
-        for (let i = start; i < start + length; i++) sum += i;
-
-        return sum;
-      })(0, straightCondition);
-
-      if (currentSum === correctSum) {
-        const from = split[0];
-        const to = split[split.length - 1];
-        const match = cards.filter(
-          card =>
-            marks.indexOf(card.mark) >= marks.indexOf(from) &&
-            marks.indexOf(card.mark) <= marks.indexOf(to)
-        );
-
-        let shape = match[0].shape;
-
-        let check = match.every(card => card.shape === shape);
-
-        if (check) result.isStraightFlush = true;
-
-        if (result.isStraightFlush && match[0].mark === marks[marks.length - 1])
-          result.isRoyalFlush = true;
-
-        result.isStraight = true;
-        result.details = { from, to, cards: match };
+        result = [];
       }
     });
 
-    return result;
+    return result.length === straightCondition ? result : false;
   };
 
   dealToDeck = n => {
@@ -412,9 +594,12 @@ class App extends Component {
   };
 
   addLog = (logs, log) => {
-    logs.unshift({ text: log.text, icon: "insert_comment" });
+    M.toast({ html: log.text, displayLength: 3000 });
 
-    M.toast({ html: log.text, displayLength: 10000 });
+    logs.unshift({
+      text: log.text,
+      icon: "insert_comment"
+    });
 
     return logs;
   };

@@ -10,7 +10,13 @@ class Player extends Component {
         {this.props.players.map((player, key) => {
           return (
             <div key={key} className="players-player">
-              <h6>{player.name}:</h6>
+              <h6>
+                <span className="players-name">{player.name}</span>
+
+                <span className="badge left new" data-badge-caption="Points: ">
+                  {player.points}
+                </span>
+              </h6>
 
               <div className="players-cards">
                 {player.cards.map((card, index) => {
