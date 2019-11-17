@@ -17,6 +17,11 @@
   display: flex;
 }
 
+.players-player h6 > * {
+  height: 2rem;
+  line-height: 2rem;
+}
+
 .players-name {
 }
 

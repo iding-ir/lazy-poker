@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import $ from "jquery/dist/jquery";
 import "materialize-css/dist/css/materialize.min.css";
 import M from "materialize-css";
 import "./app.css";
@@ -9,7 +8,6 @@ import Logs from "./logs";
 import Navbar from "./navbar";
 import {
   colors,
-  shapes,
   marks,
   suits,
   straightCondition,
@@ -20,43 +18,46 @@ import {
 
 class App extends Component {
   state = {
+    disabled: false,
     stage: 0,
     dealer: [],
     deck: [],
+    logs: [],
     players: [
-      // {
-      //   name: "Player 1",
-      //   id: "1",
-      //   winner: false,
-      //   cards: [],
-      //   bests: [],
-      //   result: {},
-      //   points: 0
-      // },
-      // {
-      //   name: "Player 2",
-      //   id: "2",
-      //   cards: [],
-      //   round: {
-      //     winner: false,
-      //     bests: [],
-      //     hand: undefined
-      //   },
-      //   points: 0
-      // },
+      {
+        name: "Player 1",
+        id: "1",
+        round: {
+          cards: [],
+          winner: false,
+          bests: [],
+          hand: undefined
+        },
+        points: 0
+      },
+      {
+        name: "Player 2",
+        id: "2",
+        round: {
+          cards: [],
+          winner: false,
+          bests: [],
+          hand: undefined
+        },
+        points: 0
+      },
       {
         name: "Player 3",
         id: "3",
-        cards: [],
         round: {
+          cards: [],
           winner: false,
           bests: [],
           hand: undefined
         },
         points: 0
       }
-    ],
-    logs: []
+    ]
   };
 
   componentDidMount() {
@@ -66,6 +67,9 @@ class App extends Component {
   }
 
   render() {
+    let { disabled, logs, deck, players } = this.state;
+    let { icon, button } = stages[this.state.stage];
+
     return (
       <div className="app-container">
         <header className="app-header">
@@ -74,59 +78,27 @@ class App extends Component {
 
         <div className="app-controls blue-grey lighten-5">
           <button
+            disabled={disabled}
             className="waves-effect waves-light btn-large"
             onClick={this.handleDeal}
           >
-            <i className="material-icons left">
-              {stages[this.state.stage].icon}
-            </i>
-            {stages[this.state.stage].button}
+            <i className="material-icons left">{icon}</i>
+            {button}
           </button>
 
-          <Logs logs={this.state.logs} />
+          <Logs logs={logs} />
         </div>
 
         <div className="app-deck blue-grey lighten-5">
-          <Deck deck={this.state.deck} />
+          <Deck deck={deck} />
         </div>
 
         <div className="app-players blue-grey lighten-5">
-          <Players players={this.state.players} />
+          <Players players={players} />
         </div>
       </div>
     );
   }
-
-  populateDealer = () => {
-    let dealer = [];
-
-    marks.forEach(mark => {
-      suits.forEach(suit => {
-        let owner = "dealer";
-
-        dealer.push({ mark, ...suit, owner });
-      });
-    });
-
-    return dealer;
-  };
-
-  refreshRound = () => {
-    const players = this.state.players.map(player => {
-      player.cards = [];
-
-      return player;
-    });
-
-    let dealer = this.populateDealer();
-
-    this.setState({
-      stage: 0,
-      dealer,
-      deck: [],
-      players
-    });
-  };
 
   handleDeal = () => {
     const stage =
@@ -158,16 +130,53 @@ class App extends Component {
     }
   };
 
+  refreshRound = () => {
+    const players = this.state.players.map(player => {
+      player.round = {
+        cards: [],
+        winner: false,
+        bests: [],
+        hand: undefined
+      };
+
+      return player;
+    });
+
+    let dealer = this.populateDealer();
+
+    this.setState({
+      disabled: false,
+      stage: 0,
+      dealer,
+      deck: [],
+      players
+    });
+  };
+
+  populateDealer = () => {
+    let dealer = [];
+
+    marks.forEach(mark => {
+      suits.forEach(suit => {
+        let owner = "dealer";
+
+        dealer.push({ mark, ...suit, owner, highlight: false });
+      });
+    });
+
+    return dealer;
+  };
+
   dealPreFlop = () => {
     const cardsPerUser = 2;
 
-    const players = this.state.players.map((player, index) => {
+    const players = this.state.players.map(player => {
       for (let i = 0; i < cardsPerUser; i++) {
         const card = this.getRandomCard();
 
         card.owner = player.id;
 
-        player.cards.push(card);
+        player.round.cards.push(card);
       }
 
       return player;
@@ -176,382 +185,180 @@ class App extends Component {
     this.setState({ players });
   };
 
+  dealToDeck = number => {
+    const deck = [...this.state.deck];
+
+    for (let i = 0; i < number; i++) {
+      const card = this.getRandomCard();
+
+      card.owner = "deck";
+
+      deck.push(card);
+    }
+
+    this.setState({ deck });
+  };
+
+  getRandomCard = () => {
+    let dealer = this.state.dealer;
+    let randomLocation = Math.floor(Math.random() * dealer.length);
+    let randomCard = dealer.splice(randomLocation, 1)[0];
+
+    return randomCard;
+  };
+
   calculateRound = () => {
-    let logs = [...this.state.logs];
     let players = [...this.state.players];
+    let reportDuration = 2000;
+
+    this.setState({ disabled: true });
+
+    setTimeout(() => {
+      this.setState({ disabled: false });
+    }, players.length * reportDuration);
 
     players.forEach((player, index) => {
-      const cards = this.sortCardsByMark([...player.cards, ...this.state.deck]);
+      let text;
+
+      const cards = this.sortCardsByMarkDescending([
+        ...player.round.cards,
+        ...this.state.deck
+      ]);
 
       let straight = this.checkStraight(cards);
-
-      if (straight) {
-        let straightFlush = this.checkFlush(straight);
-
-        if (straightFlush) {
-          let from = straight[straight.length - 1].mark;
-          let to = straight[0].mark;
-          let hand =
-            to === marks[marks.length - 1] ? "royal-flush" : "straight-flush";
-          let text = `${player.name} has a ${hand} from ${from} to ${to}`;
-
-          player.round.bests = straight;
-          player.round.hand = hand;
-
-          console.log(text, straight);
-
-          logs = this.addLog(logs, { text, icon: "insert_comment" });
-
-          return;
-        }
-      }
-
+      let straightFlush = straight ? this.checkFlush(straight) : false;
       let flush = this.checkFlush(cards);
+      let quads = this.getSimilarCardsByMark(cards, 4);
+      let toaks = this.getSimilarCardsByMark(cards, 3);
+      let pairs = this.getSimilarCardsByMark(cards, 2);
+      let highCard = cards[0];
 
-      if (flush) {
+      if (straightFlush) {
+        // royal-flush & straight-flush
+
+        let from = straight[straight.length - 1].mark;
+        let to = straight[0].mark;
+        let hand =
+          to === marks[marks.length - 1] ? "royal-flush" : "straight-flush";
+
+        text = `${player.name} has a ${hand} from ${from} to ${to}`;
+
+        player.round.bests = straight;
+        player.round.hand = hand;
+      } else if (quads.length >= 1) {
+        // four-of-a-kind
+
+        let cards1 = quads[0];
+
+        text = `${player.name} has four ${cards1[0].mark}'s`;
+
+        player.round.bests = this.addHighCards(cards, cards1);
+        player.round.hand = "four-of-a-kind";
+      } else if (
+        (toaks.length === 1 && pairs.length >= 1) ||
+        toaks.length >= 2
+      ) {
+        // full-house
+
+        let cards1 = toaks[0];
+        let cards2 = toaks.length >= 2 ? toaks[1] : pairs[0];
+
+        text = `${player.name} has a full-house of ${cards1[0].mark}'s over ${cards2[0].mark}'s`;
+
+        player.round.bests = [...cards1, ...cards2.slice(0, 2)];
+        player.round.hand = "full-house";
+      } else if (flush) {
+        // flush
+
         let kick = flush[0].mark;
         let color = flush[0].color;
-        let text = `${player.name} has flush of ${color} kicking to ${kick}`;
+
+        text = `${player.name} has flush of ${color} kicking to ${kick}`;
 
         player.round.bests = flush;
         player.round.hand = "flush";
+      } else if (straight) {
+        // straight
 
-        console.log(text, flush);
-
-        logs = this.addLog(logs, { text, icon: "insert_comment" });
-
-        return;
-      }
-
-      if (straight) {
         let from = straight[straight.length - 1].mark;
         let to = straight[0].mark;
-        let text = `${player.name} has a straight from ${from} to ${to}`;
+
+        text = `${player.name} has a straight from ${from} to ${to}`;
 
         player.round.bests = straight;
         player.round.hand = "straight";
+      } else if (toaks.length >= 1) {
+        // three-of-a-kind
 
-        console.log(text, straight);
+        let cards1 = toaks[0];
 
-        logs = this.addLog(logs, { text, icon: "insert_comment" });
+        text = `${player.name} has a three-of-a-kind of ${cards1[0].mark}'s`;
 
-        return;
-      }
-
-      let quads = this.getSimilarCardsByMark(cards, 4);
-
-      if (quads.length >= 1) {
-        let first = quads[0];
-        let text = `${player.name} has a quad of ${first.mark}'s`;
-
-        player.round.bests = [...first.cards];
-        player.round.hand = "four-of-a-kind";
-
-        console.log(text, first.cards);
-
-        logs = this.addLog(logs, { text, icon: "insert_comment" });
-
-        return;
-      }
-
-      let fullhouseToaks = this.getSimilarCardsByMark(cards, 3);
-      let fullhousepairs = this.getSimilarCardsByMark(cards, 2);
-
-      if (
-        (fullhouseToaks.length === 1 && fullhousepairs.length >= 1) ||
-        fullhouseToaks.length >= 2
-      ) {
-        let first = fullhouseToaks[0];
-        let second =
-          fullhouseToaks.length >= 2 ? fullhouseToaks[1] : fullhousepairs[0];
-        let text = `${player.name} has a full-house of ${first.mark}'s over ${second.mark}'s`;
-
-        // let secondLeg = fullhousepairs[0] || fullhouseToaks[1];
-
-        // player.round.bests = [...fullhouseToaks[0], ...secondLeg];
-        player.round.hand = "full-house";
-
-        console.log(text, first.cards, second.cards);
-
-        logs = this.addLog(logs, { text, icon: "insert_comment" });
-
-        return;
-      }
-
-      let toaks = this.getSimilarCardsByMark(cards, 3);
-
-      if (toaks.length >= 1) {
-        let first = toaks[0];
-        let text = `${player.name} has a three-of-a-kind of ${first.mark}'s`;
-
-        player.round.bests = [...first.cards];
+        player.round.bests = this.addHighCards(cards, cards1);
         player.round.hand = "three-of-a-kind";
+      } else if (pairs.length >= 2) {
+        // two-pairs
 
-        console.log(text, first.cards);
+        let cards1 = pairs[0];
+        let cards2 = pairs[1];
 
-        logs = this.addLog(logs, { text, icon: "insert_comment" });
+        text = `${player.name} has two pairs of ${cards1[0].mark}'s and ${cards2[0].mark}'s`;
 
-        return;
-      }
-
-      let pairs = this.getSimilarCardsByMark(cards, 2);
-
-      if (pairs.length >= 2) {
-        let first = pairs[pairs.length - 1];
-        let second = pairs[pairs.length - 2];
-        let text = `${player.name} has two pairs of ${first.mark}'s and ${second.mark}'s`;
-
-        player.round.bests = [...first.cards, ...second.cards];
+        player.round.bests = this.addHighCards(cards, [...cards1, ...cards2]);
         player.round.hand = "two-pairs";
+      } else if (pairs.length === 1) {
+        // pair
 
-        console.log(text, first.cards, second.cards);
+        let cards1 = pairs[0];
 
-        logs = this.addLog(logs, { text, icon: "insert_comment" });
+        text = `${player.name} has a pair: ${cards1[0].mark}'s.`;
 
-        return;
-      }
-
-      if (pairs.length === 1) {
-        let first = pairs[0];
-        let text = `${player.name} has a pair: ${first.mark}'s.`;
-
-        player.round.bests = [...first.cards];
+        player.round.bests = this.addHighCards(cards, cards1);
         player.round.hand = "pair";
+      } else {
+        // high-card
 
-        console.log(text, first.cards);
+        text = `${player.name} has high card ${highCard.mark}`;
 
-        logs = this.addLog(logs, { text, icon: "insert_comment" });
-
-        return;
+        player.round.bests = this.addHighCards(cards, [highCard]);
+        player.round.hand = "high-card";
       }
 
-      let highCard = cards[0];
-      let text = `${player.name} has high card ${highCard.mark}`;
+      setTimeout(() => {
+        this.addLog({ text, icon: "insert_comment" });
 
-      player.round.bests = [highCard];
-      player.round.hand = "high-card";
-
-      console.log(text, highCard);
-
-      logs = this.addLog(logs, { text, icon: "insert_comment" });
+        this.givePoints(player);
+      }, index * reportDuration);
     });
-
-    this.setState({ logs });
-
-    this.decideWinner(players);
   };
 
-  decideWinner = players => {
-    console.log("players", players);
-
-    let ordered = [...players];
-    let winners = undefined;
-
-    ordered.sort((a, b) => {
-      return (
-        winningHands.indexOf(b.round.hand) - winningHands.indexOf(a.round.hand)
-      );
+  sortCardsByMarkDescending = cards => {
+    return [...cards].sort((a, b) => {
+      return marks.indexOf(b.mark) - marks.indexOf(a.mark);
     });
-
-    console.log("ordered", ordered);
-
-    let winningHand = ordered[0].round.hand;
-
-    console.log(winningHand);
-
-    let possibleWinners = players.filter(
-      player => player.round.hand === winningHand
-    );
-
-    console.log("possibleWinners", possibleWinners);
-
-    if (possibleWinners.length > 10) {
-      if (
-        winningHand === "high-card" ||
-        winningHand === "flush" ||
-        winningHand === "straight" ||
-        winningHand === "straight-flush" ||
-        winningHand === "royal-flush"
-      ) {
-        let cards = this.mergePlayersBests(possibleWinners);
-
-        let mark = this.sortCardsByMark(cards)[0].mark;
-
-        winners = this.playersHaveKicker(possibleWinners, mark);
-
-        if (winners.length === 0) winners = possibleWinners;
-      }
-
-      if (
-        winningHand === "pair" ||
-        winningHand === "three-of-a-kind" ||
-        winningHand === "four-of-a-kind"
-      ) {
-        let cards = this.mergePlayersBests(possibleWinners);
-
-        let mark = this.sortCardsByMark(cards)[0].mark;
-
-        winners = this.playersHaveKicker(possibleWinners, mark);
-
-        if (winners.length === 0) winners = possibleWinners;
-      }
-    } else {
-      winners = possibleWinners;
-    }
-
-    players.forEach(player => {
-      winners.forEach(winner => {
-        if (player.id === winner.id) {
-          player.points += 1;
-
-          player.round.winner = true;
-
-          this.highlight(player);
-        }
-      });
-    });
-
-    this.setState({ players });
   };
 
-  playersHaveKicker = (players, mark) => {
-    let clone = [...players];
-
-    let result = clone.filter(player => {
-      return player.round.kicker.mark === mark;
+  sortCardsByMarkAscending = cards => {
+    return [...cards].sort((a, b) => {
+      return marks.indexOf(a.mark) - marks.indexOf(b.mark);
     });
-
-    return result;
-  };
-
-  mergePlayersBests = players => {
-    let result = players.reduce((total, player) => {
-      total.push(...player.round.bests);
-
-      return total;
-    }, []);
-
-    return result;
-  };
-
-  mergePlayersCards = players => {
-    let result = players.reduce((total, player) => {
-      total.push(...player.cards);
-
-      return total;
-    }, []);
-
-    return result;
-  };
-
-  mergePlayersHigh = players => {
-    let result = players.reduce((total, player) => {
-      total.push(player.round.kicker);
-
-      return total;
-    }, []);
-
-    return result;
-  };
-
-  highlight = player => {
-    player.cards.forEach((card, index) => {
-      player.round.bests.forEach((c, i) => {
-        if (JSON.stringify(card) === JSON.stringify(c))
-          player.cards[index].highlight = true;
-      });
-    });
-
-    let deck = [...this.state.deck];
-
-    deck.forEach((card, index) => {
-      player.round.bests.forEach((c, i) => {
-        if (JSON.stringify(card) === JSON.stringify(c))
-          deck[index].highlight = true;
-      });
-    });
-
-    let players = [...this.state.players];
-
-    players.forEach((p, i) => {
-      if (p.id === player.id) players[i] = player;
-    });
-
-    this.setState({ players });
-  };
-
-  groupByMark = cards => {
-    let groups = [];
-
-    marks.forEach(mark => {
-      let group = [];
-
-      cards.forEach(card => {
-        if (card.mark === mark) group.push(card);
-      });
-
-      if (group.length) groups.push(group);
-    });
-
-    return groups;
-  };
-
-  getSimilarCardsByMark = (cards, number) => {
-    let groups = this.groupByMark(cards);
-    let selected = [];
-
-    groups.forEach(group => {
-      if (group.length === number)
-        selected.push({
-          count: number,
-          mark: group[0].mark,
-          cards: group
-        });
-    });
-
-    return selected;
-  };
-
-  checkFlush = cards => {
-    let isFlush = false;
-
-    colors.forEach(color => {
-      let match = cards.filter(card => {
-        return card.color === color;
-      });
-
-      if (match.length >= flushCondition) isFlush = match.slice(0, 5);
-    });
-
-    return isFlush;
-  };
-
-  getUniqueCardsByMark = cards => {
-    let output = {};
-
-    cards.forEach(item => {
-      output[item.mark] = item;
-    });
-
-    output = Object.values(output);
-
-    output = this.sortCardsByMark(output);
-
-    return output;
   };
 
   checkStraight = cards => {
-    let uniqueCards = this.getUniqueCardsByMark(cards);
+    let uniqueCards = this.removeDuplicateCardsByMark(cards);
     let counter = 1;
     let result = [];
+
+    uniqueCards = this.sortCardsByMarkDescending(uniqueCards);
 
     uniqueCards.forEach((card, index) => {
       if (uniqueCards[index + 1] === undefined) return;
       if (counter > straightCondition) return;
-      if (
-        uniqueCards[index + 1].mark ===
-        marks[marks.indexOf(uniqueCards[index].mark) - 1]
-      ) {
+
+      let nextInStack = uniqueCards[index + 1].mark;
+      let nextShouldBe = marks[marks.indexOf(uniqueCards[index].mark) - 1];
+
+      if (nextInStack === nextShouldBe) {
         counter += 1;
 
         result.push(card);
@@ -565,43 +372,112 @@ class App extends Component {
     return result.length === straightCondition ? result : false;
   };
 
-  dealToDeck = n => {
-    const deck = [...this.state.deck];
+  checkFlush = cards => {
+    let isFlush = false;
 
-    for (let i = 0; i < n; i++) {
-      const card = this.getRandomCard();
+    colors.forEach(color => {
+      let match = cards.filter(card => {
+        return card.color === color;
+      });
 
-      card.owner = "deck";
-
-      deck.push(card);
-    }
-
-    this.setState({ deck });
-  };
-
-  getRandomCard = () => {
-    let location = Math.floor(Math.random() * this.state.dealer.length);
-
-    let pickedCard = this.state.dealer.splice(location, 1)[0];
-
-    return pickedCard;
-  };
-
-  sortCardsByMark = cards => {
-    return [...cards].sort((a, b) => {
-      return marks.indexOf(b.mark) - marks.indexOf(a.mark);
+      if (match.length >= flushCondition)
+        isFlush = match.slice(0, flushCondition);
     });
+
+    return isFlush;
   };
 
-  addLog = (logs, log) => {
+  getSimilarCardsByMark = (cards, number) => {
+    let groups = this.groupByMark(cards);
+    let selected = groups.filter(group => group.length === number);
+
+    return selected;
+  };
+
+  groupByMark = cards => {
+    let groups = [];
+
+    marks.forEach(mark => {
+      let group = cards.filter(card => card.mark === mark);
+
+      if (group.length) groups.unshift(group);
+    });
+
+    return groups;
+  };
+
+  removeDuplicateCardsByMark = cards => {
+    let output = {};
+
+    cards.forEach(item => {
+      output[item.mark] = item;
+    });
+
+    return Object.values(output);
+  };
+
+  addHighCards = (from, to) => {
+    let combined = [...to, ...from];
+
+    let stringifiedCard = combined.map(item => JSON.stringify(item));
+
+    let uniqueCards = stringifiedCard.filter(
+      (card, index) => stringifiedCard.indexOf(card) === index
+    );
+
+    let cards = uniqueCards.map(item => JSON.parse(item)).slice(0, 5);
+
+    return cards;
+  };
+
+  addLog = log => {
     M.toast({ html: log.text, displayLength: 3000 });
+
+    let logs = [...this.state.logs];
 
     logs.unshift({
       text: log.text,
       icon: "insert_comment"
     });
 
+    this.setState({ logs });
+
     return logs;
+  };
+
+  givePoints = player => {
+    let players = [...this.state.players];
+    let deck = [...this.state.deck];
+
+    players.forEach(p => {
+      if (p.id === player.id) {
+        p.points += winningHands.indexOf(player.round.hand);
+      }
+
+      p.round.cards.forEach(c => {
+        c.highlight = false;
+
+        if (p.id === player.id) {
+          player.round.bests.forEach(card => {
+            if (JSON.stringify(c) === JSON.stringify(card)) {
+              c.highlight = true;
+            }
+          });
+        }
+      });
+    });
+
+    deck.forEach(c => {
+      c.highlight = false;
+
+      player.round.bests.forEach(card => {
+        if (JSON.stringify(c) === JSON.stringify(card)) {
+          c.highlight = true;
+        }
+      });
+    });
+
+    this.setState({ deck, players });
   };
 }
 

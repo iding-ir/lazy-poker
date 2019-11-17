@@ -13,13 +13,13 @@ class Player extends Component {
               <h6>
                 <span className="players-name">{player.name}</span>
 
-                <span className="badge left new" data-badge-caption="Points: ">
+                <span className="badge left new" data-badge-caption="Points">
                   {player.points}
                 </span>
               </h6>
 
               <div className="players-cards">
-                {player.cards.map((card, index) => {
+                {player.round.cards.map((card, index) => {
                   return <Card key={index} card={card} />;
                 })}
               </div>
