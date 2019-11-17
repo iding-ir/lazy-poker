@@ -33,7 +33,6 @@
 .app-players {
   overflow: auto;
   margin-bottom: 1rem;
-  padding: 1rem;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
   grid-column: start/end;
   grid-row: players-start/players-end;

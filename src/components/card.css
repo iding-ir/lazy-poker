@@ -8,14 +8,12 @@
   margin-right: 0.5rem;
   border-radius: 4px;
   background-color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .cards-card[data-highlight="true"] {
   top: -4px;
   left: -4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
 }
 
@@ -51,4 +49,22 @@
 
 .cards-card > div:nth-of-type(2).cards-icon-diamond {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDIyMy42NDYgMjIzLjY0NiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjIzLjY0NiAyMjMuNjQ2OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gZmlsbD0iI2Q1MDAwMCIgcG9pbnRzPSIxMTEuODIzLDAgMTYuNjIyLDExMS44MjMgMTExLjgyMywyMjMuNjQ2IDIwNy4wMjUsMTExLjgyMyAiLz48L3N2Zz4=);
+}
+
+.cards-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 1;
+  visibility: visible;
+  background-color: #c9c9c9;
+  transition: all 0.8s ease;
+}
+
+.cards-hidden .cards-back {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.8s ease;
 }

@@ -1,10 +1,12 @@
 .players {
   display: flex;
   flex-wrap: wrap;
+  padding: 0.5rem;
 }
 
 .players-player {
   width: calc(100% / 2);
+  padding: 0.5rem;
 }
 
 @media only screen and (min-width: 992px) {
@@ -13,20 +15,27 @@
   }
 }
 
-.players-player h6 {
+.players-player .players-title {
   display: flex;
 }
 
-.players-player h6 > * {
+.players-player .players-title > * {
   height: 2rem;
   line-height: 2rem;
 }
 
-.players-name {
+.players-player .players-name {
+  flex-grow: 10;
+  margin: 0;
+}
+
+.players-player .players-points {
+  margin: 0 1rem 0 0;
 }
 
 .players-cards {
   display: flex;
   flex-direction: row;
   min-height: 12rem;
+  padding: 1rem 0 0 0;
 }

@@ -21,14 +21,14 @@ class App extends Component {
     disabled: false,
     stage: 0,
     dealer: [],
-    deck: [],
+    deck: [null, null, null, null, null],
     logs: [],
     players: [
       {
         name: "Player 1",
         id: "1",
         round: {
-          cards: [],
+          cards: [null, null],
           winner: false,
           bests: [],
           hand: undefined
@@ -39,7 +39,7 @@ class App extends Component {
         name: "Player 2",
         id: "2",
         round: {
-          cards: [],
+          cards: [null, null],
           winner: false,
           bests: [],
           hand: undefined
@@ -50,7 +50,7 @@ class App extends Component {
         name: "Player 3",
         id: "3",
         round: {
-          cards: [],
+          cards: [null, null],
           winner: false,
           bests: [],
           hand: undefined
@@ -94,11 +94,21 @@ class App extends Component {
         </div>
 
         <div className="app-players blue-grey lighten-5">
-          <Players players={players} />
+          <Players players={players} onChangeName={this.handleChangeName} />
         </div>
       </div>
     );
   }
+
+  handleChangeName = (player, name) => {
+    let players = [...this.state.players];
+
+    players.forEach(p => {
+      if (p.id === player.id) p.name = name;
+    });
+
+    this.setState({ players });
+  };
 
   handleDeal = () => {
     const stage =
@@ -114,13 +124,13 @@ class App extends Component {
         this.dealPreFlop();
         break;
       case "flop":
-        this.dealToDeck(3);
+        this.dealToDeck(3, 0);
         break;
       case "turn":
-        this.dealToDeck(1);
+        this.dealToDeck(1, 3);
         break;
       case "river":
-        this.dealToDeck(1);
+        this.dealToDeck(1, 4);
         break;
       case "result":
         this.calculateRound();
@@ -133,7 +143,7 @@ class App extends Component {
   refreshRound = () => {
     const players = this.state.players.map(player => {
       player.round = {
-        cards: [],
+        cards: [null, null],
         winner: false,
         bests: [],
         hand: undefined
@@ -148,7 +158,7 @@ class App extends Component {
       disabled: false,
       stage: 0,
       dealer,
-      deck: [],
+      deck: [null, null, null, null, null],
       players
     });
   };
@@ -176,7 +186,7 @@ class App extends Component {
 
         card.owner = player.id;
 
-        player.round.cards.push(card);
+        player.round.cards.splice(i, 1, card);
       }
 
       return player;
@@ -185,7 +195,7 @@ class App extends Component {
     this.setState({ players });
   };
 
-  dealToDeck = number => {
+  dealToDeck = (number, offset) => {
     const deck = [...this.state.deck];
 
     for (let i = 0; i < number; i++) {
@@ -193,7 +203,7 @@ class App extends Component {
 
       card.owner = "deck";
 
-      deck.push(card);
+      deck.splice(offset + i, 1, card);
     }
 
     this.setState({ deck });
@@ -209,7 +219,7 @@ class App extends Component {
 
   calculateRound = () => {
     let players = [...this.state.players];
-    let reportDuration = 2000;
+    let reportDuration = 3000;
 
     this.setState({ disabled: true });
 
@@ -241,19 +251,25 @@ class App extends Component {
         let hand =
           to === marks[marks.length - 1] ? "royal-flush" : "straight-flush";
 
-        text = `${player.name} has a ${hand} from ${from} to ${to}`;
-
         player.round.bests = straight;
         player.round.hand = hand;
+
+        let badge = this.logBadge(player.round.hand);
+
+        text =
+          `${player.name} has a ${hand} from ${from} to ${to} ${badge} ` +
+          badge;
       } else if (quads.length >= 1) {
         // four-of-a-kind
 
         let cards1 = quads[0];
 
-        text = `${player.name} has four ${cards1[0].mark}'s`;
-
         player.round.bests = this.addHighCards(cards, cards1);
         player.round.hand = "four-of-a-kind";
+
+        let badge = this.logBadge(player.round.hand);
+
+        text = `${player.name} has four ${cards1[0].mark}'s ` + badge;
       } else if (
         (toaks.length === 1 && pairs.length >= 1) ||
         toaks.length >= 2
@@ -263,73 +279,100 @@ class App extends Component {
         let cards1 = toaks[0];
         let cards2 = toaks.length >= 2 ? toaks[1] : pairs[0];
 
-        text = `${player.name} has a full-house of ${cards1[0].mark}'s over ${cards2[0].mark}'s`;
-
         player.round.bests = [...cards1, ...cards2.slice(0, 2)];
         player.round.hand = "full-house";
+
+        let badge = this.logBadge(player.round.hand);
+
+        text =
+          `${player.name} has a full-house of ${cards1[0].mark}'s over ${cards2[0].mark}'s ` +
+          badge;
       } else if (flush) {
         // flush
 
         let kick = flush[0].mark;
         let color = flush[0].color;
 
-        text = `${player.name} has flush of ${color} kicking to ${kick}`;
-
         player.round.bests = flush;
         player.round.hand = "flush";
+
+        let badge = this.logBadge(player.round.hand);
+
+        text =
+          `${player.name} has flush of ${color} kicking to ${kick} ` + badge;
       } else if (straight) {
         // straight
 
         let from = straight[straight.length - 1].mark;
         let to = straight[0].mark;
 
-        text = `${player.name} has a straight from ${from} to ${to}`;
-
         player.round.bests = straight;
         player.round.hand = "straight";
+
+        let badge = this.logBadge(player.round.hand);
+
+        text = `${player.name} has a straight from ${from} to ${to} ` + badge;
       } else if (toaks.length >= 1) {
         // three-of-a-kind
 
         let cards1 = toaks[0];
 
-        text = `${player.name} has a three-of-a-kind of ${cards1[0].mark}'s`;
-
         player.round.bests = this.addHighCards(cards, cards1);
         player.round.hand = "three-of-a-kind";
+
+        let badge = this.logBadge(player.round.hand);
+
+        text =
+          `${player.name} has a three-of-a-kind of ${cards1[0].mark}'s ` +
+          badge;
       } else if (pairs.length >= 2) {
         // two-pairs
 
         let cards1 = pairs[0];
         let cards2 = pairs[1];
 
-        text = `${player.name} has two pairs of ${cards1[0].mark}'s and ${cards2[0].mark}'s`;
-
         player.round.bests = this.addHighCards(cards, [...cards1, ...cards2]);
         player.round.hand = "two-pairs";
+
+        let badge = this.logBadge(player.round.hand);
+
+        text =
+          `${player.name} has two pairs of ${cards1[0].mark}'s and ${cards2[0].mark}'s ` +
+          badge;
       } else if (pairs.length === 1) {
         // pair
 
         let cards1 = pairs[0];
 
-        text = `${player.name} has a pair: ${cards1[0].mark}'s.`;
-
         player.round.bests = this.addHighCards(cards, cards1);
         player.round.hand = "pair";
+
+        let badge = this.logBadge(player.round.hand);
+
+        text = `${player.name} has a pair: ${cards1[0].mark}'s. ` + badge;
       } else {
         // high-card
 
-        text = `${player.name} has high card ${highCard.mark}`;
-
         player.round.bests = this.addHighCards(cards, [highCard]);
         player.round.hand = "high-card";
+
+        let badge = this.logBadge(player.round.hand);
+
+        text = `${player.name} has high card ${highCard.mark} ` + badge;
       }
 
       setTimeout(() => {
-        this.addLog({ text, icon: "insert_comment" });
+        this.addLog({ text, icon: "insert_comment" }, reportDuration + 1000);
 
         this.givePoints(player);
       }, index * reportDuration);
     });
+  };
+
+  logBadge = hand => {
+    let points = winningHands.indexOf(hand);
+
+    return `<button class="btn-flat toast-action">${points} Points</button>`;
   };
 
   sortCardsByMarkDescending = cards => {
@@ -430,8 +473,8 @@ class App extends Component {
     return cards;
   };
 
-  addLog = log => {
-    M.toast({ html: log.text, displayLength: 3000 });
+  addLog = (log, duration) => {
+    M.toast({ html: log.text, displayLength: duration });
 
     let logs = [...this.state.logs];
 

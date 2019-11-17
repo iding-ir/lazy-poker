@@ -7,8 +7,6 @@ class Deck extends Component {
   render() {
     return (
       <div className="deck">
-        <h5>Table:</h5>
-
         <div className="deck-cards">
           {this.props.deck.map((card, index) => {
             return <Card key={index} card={card} />;

@@ -10,13 +10,22 @@ class Player extends Component {
         {this.props.players.map((player, key) => {
           return (
             <div key={key} className="players-player">
-              <h6>
-                <span className="players-name">{player.name}</span>
-
-                <span className="badge left new" data-badge-caption="Points">
+              <div className="players-title">
+                <span
+                  className="players-points badge left new"
+                  data-badge-caption="Points"
+                >
                   {player.points}
                 </span>
-              </h6>
+
+                <input
+                  className="players-name"
+                  value={player.name}
+                  onChange={event =>
+                    this.props.onChangeName(player, event.target.value)
+                  }
+                />
+              </div>
 
               <div className="players-cards">
                 {player.round.cards.map((card, index) => {

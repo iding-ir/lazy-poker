@@ -4,16 +4,37 @@ import "./card.css";
 class Card extends Component {
   state = {};
   render() {
-    const className = "cards-icon-" + this.props.card.shape;
+    if (this.props.card) {
+      const cardIcon = "cards-icon-" + this.props.card.shape;
+      const cardClass = "cards-card" + this.getSide();
 
-    return (
-      <div className="cards-card" data-highlight={this.props.card.highlight}>
-        <div>{this.props.card.mark}</div>
-        <div className={className}></div>
-        <div>{this.props.card.mark}</div>
-      </div>
-    );
+      return (
+        <React.Fragment>
+          <div className={cardClass} data-highlight={this.props.card.highlight}>
+            <div>{this.props.card.mark}</div>
+            <div className={cardIcon}></div>
+            <div>{this.props.card.mark}</div>
+            <div className="cards-back"></div>
+          </div>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          <div className="cards-card">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div className="cards-back"></div>
+          </div>
+        </React.Fragment>
+      );
+    }
   }
+
+  getSide = () => {
+    return this.props.card === null ? "" : " cards-hidden";
+  };
 }
 
 export default Card;
