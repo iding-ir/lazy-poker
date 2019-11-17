@@ -11,12 +11,14 @@ class Player extends Component {
           return (
             <div key={key} className="players-player">
               <div className="players-title">
-                <span
-                  className="players-points badge left new"
-                  data-badge-caption="Points"
+                <button
+                  className="players-remove waves-effect waves-light btn red"
+                  onClick={() => {
+                    this.props.onRemove(player.id);
+                  }}
                 >
-                  {player.points}
-                </span>
+                  <i className="material-icons left"></i>
+                </button>
 
                 <input
                   className="players-name"
@@ -25,6 +27,13 @@ class Player extends Component {
                     this.props.onChangeName(player, event.target.value)
                   }
                 />
+
+                <span
+                  className="players-points badge left new"
+                  data-badge-caption="Points"
+                >
+                  {player.points}
+                </span>
               </div>
 
               <div className="players-cards">

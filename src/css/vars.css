@@ -1,0 +1,29 @@
+:root {
+  --color-primary-light: #1996d8;
+  --color-primary-dark: #1377b8;
+  --color-secondary-light: #68c16d;
+  --color-secondary-dark: #4e9d54;
+
+  --color-lighter: #eceff1;
+  --color-light: #cfd8dc;
+  --color-dark: #37474f;
+  --color-darker: #263238;
+
+  --padding-sm: 0.25rem;
+  --padding-md: 0.5rem;
+  --padding-lg: 1rem;
+
+  --border-radius: 4px;
+
+  --box-shadow-sm: 0 0 4px rgba(0, 0, 0, 0.1);
+  --box-shadow-md: 0 0 4px rgba(0, 0, 0, 0.2);
+  --box-shadow-lg: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+@media only screen and (min-width: 992px) {
+  :root {
+    --padding-sm: 0.5rem;
+    --padding-md: 1rem;
+    --padding-lg: 2rem;
+  }
+}

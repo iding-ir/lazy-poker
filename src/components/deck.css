@@ -1,5 +1,17 @@
 .deck-cards {
   display: flex;
   flex-direction: row;
-  min-height: 12rem;
+  min-height: 6rem;
+}
+
+@media only screen and (min-width: 600px) {
+  .deck-cards {
+    min-height: 9rem;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .deck-cards {
+    min-height: 12rem;
+  }
 }

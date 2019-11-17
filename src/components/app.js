@@ -4,6 +4,7 @@ import M from "materialize-css";
 import "./app.css";
 import Players from "./players";
 import Deck from "./deck";
+import Controls from "./controls";
 import Logs from "./logs";
 import Navbar from "./navbar";
 import {
@@ -18,11 +19,12 @@ import {
 
 class App extends Component {
   state = {
-    disabled: false,
     stage: 0,
     dealer: [],
     deck: [null, null, null, null, null],
     logs: [],
+    autoplay: false,
+    disabled: false,
     players: [
       {
         name: "Player 1",
@@ -67,8 +69,7 @@ class App extends Component {
   }
 
   render() {
-    let { disabled, logs, deck, players } = this.state;
-    let { icon, button } = stages[this.state.stage];
+    let { logs, deck, players } = this.state;
 
     return (
       <div className="app-container">
@@ -77,38 +78,31 @@ class App extends Component {
         </header>
 
         <div className="app-controls blue-grey lighten-5">
-          <button
-            disabled={disabled}
-            className="waves-effect waves-light btn-large"
-            onClick={this.handleDeal}
-          >
-            <i className="material-icons left">{icon}</i>
-            {button}
-          </button>
+          <Controls
+            state={this.state}
+            onDeal={this.handleDeal}
+            onAutoplay={this.handleAutoplay}
+          />
 
           <Logs logs={logs} />
         </div>
+
+        <div className="app-ranking blue-grey lighten-5"></div>
 
         <div className="app-deck blue-grey lighten-5">
           <Deck deck={deck} />
         </div>
 
         <div className="app-players blue-grey lighten-5">
-          <Players players={players} onChangeName={this.handleChangeName} />
+          <Players
+            players={players}
+            onRemove={this.handleRemovePlayer}
+            onChangeName={this.handleChangeName}
+          />
         </div>
       </div>
     );
   }
-
-  handleChangeName = (player, name) => {
-    let players = [...this.state.players];
-
-    players.forEach(p => {
-      if (p.id === player.id) p.name = name;
-    });
-
-    this.setState({ players });
-  };
 
   handleDeal = () => {
     const stage =
@@ -124,13 +118,13 @@ class App extends Component {
         this.dealPreFlop();
         break;
       case "flop":
-        this.dealToDeck(3, 0);
+        this.dealToDeck(3);
         break;
       case "turn":
-        this.dealToDeck(1, 3);
+        this.dealToDeck(1);
         break;
       case "river":
-        this.dealToDeck(1, 4);
+        this.dealToDeck(1);
         break;
       case "result":
         this.calculateRound();
@@ -138,6 +132,44 @@ class App extends Component {
       default:
       // default
     }
+  };
+
+  handleAutoplay = () => {
+    let autoplay = this.state.autoplay;
+
+    if (autoplay) {
+      // autoplay.destroy();
+
+      autoplay = false;
+    } else {
+      autoplay = setInterval(() => {
+        document.getElementById("controls-deal").click();
+      }, 2000);
+    }
+
+    this.setState({ autoplay });
+  };
+
+  handleRemovePlayer = id => {
+    let currentPlayers = [...this.state.players];
+
+    if (currentPlayers.length === 1) return;
+
+    let players = currentPlayers.filter(player => {
+      return player.id === id ? false : true;
+    });
+
+    this.setState({ players });
+  };
+
+  handleChangeName = (player, name) => {
+    let players = [...this.state.players];
+
+    players.forEach(p => {
+      if (p.id === player.id) p.name = name;
+    });
+
+    this.setState({ players });
   };
 
   refreshRound = () => {
@@ -186,7 +218,9 @@ class App extends Component {
 
         card.owner = player.id;
 
-        player.round.cards.splice(i, 1, card);
+        let start = player.round.cards.indexOf(null);
+
+        player.round.cards.splice(start, 1, card);
       }
 
       return player;
@@ -195,7 +229,7 @@ class App extends Component {
     this.setState({ players });
   };
 
-  dealToDeck = (number, offset) => {
+  dealToDeck = number => {
     const deck = [...this.state.deck];
 
     for (let i = 0; i < number; i++) {
@@ -203,7 +237,9 @@ class App extends Component {
 
       card.owner = "deck";
 
-      deck.splice(offset + i, 1, card);
+      let start = deck.indexOf(null);
+
+      deck.splice(start, 1, card);
     }
 
     this.setState({ deck });

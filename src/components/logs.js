@@ -6,7 +6,7 @@ class Logs extends Component {
   state = {};
   componentDidMount() {
     document.addEventListener("DOMContentLoaded", function() {
-      let element = document.querySelector("#logs");
+      let element = document.querySelector("#logs-modal");
 
       M.Modal.init(element);
     });
@@ -16,9 +16,10 @@ class Logs extends Component {
     return (
       <div className="logs">
         <button
-          className="logs-trigger btn-floating btn-large waves-effect waves-light red"
+          id="logs-trigger"
+          className="btn-floating btn waves-effect waves-light red"
           onClick={() => {
-            let element = document.querySelector("#logs");
+            let element = document.querySelector("#logs-modal");
 
             M.Modal.getInstance(element).open();
           }}
@@ -31,7 +32,7 @@ class Logs extends Component {
           {this.props.logs.length}
         </span>
 
-        <div id="logs" className="modal">
+        <div id="logs-modal" className="modal">
           <div className="modal-content">
             <h5>logs</h5>
 

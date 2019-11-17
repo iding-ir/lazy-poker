@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./navbar.css";
 
 class Navbar extends Component {
   state = {};
@@ -6,10 +7,10 @@ class Navbar extends Component {
     return (
       <React.Fragment>
         <nav className="indigo darken-2">
-          <div className="nav-wrapper row">
-            <div className="col s12">
+          <div className="nav-wrapper">
+            <div className="navbar-container">
               <a href="https://github.com/iding-ir" className="brand-logo">
-                React Poker
+                Lazy Poker
               </a>
 
               <ul id="nav-mobile" className="right hide-on-med-and-down">
