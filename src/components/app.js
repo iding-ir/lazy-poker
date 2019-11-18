@@ -3,6 +3,7 @@ import "materialize-css/dist/css/materialize.min.css";
 import M from "materialize-css";
 import "./app.css";
 import Players from "./players";
+import Ranking from "./ranking";
 import Deck from "./deck";
 import Controls from "./controls";
 import Logs from "./logs";
@@ -87,7 +88,9 @@ class App extends Component {
           <Logs logs={logs} />
         </div>
 
-        <div className="app-ranking blue-grey lighten-5"></div>
+        <div className="app-ranking blue-grey lighten-5">
+          <Ranking players={players} />
+        </div>
 
         <div className="app-deck blue-grey lighten-5">
           <Deck deck={deck} />

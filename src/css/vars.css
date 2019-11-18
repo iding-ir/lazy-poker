@@ -14,10 +14,23 @@
   --padding-lg: 1rem;
 
   --border-radius: 4px;
+  --border-thickness: 3px;
 
   --box-shadow-sm: 0 0 4px rgba(0, 0, 0, 0.1);
   --box-shadow-md: 0 0 4px rgba(0, 0, 0, 0.2);
   --box-shadow-lg: 0 0 4px rgba(0, 0, 0, 0.3);
+
+  --fade-dark-sm: rgba(0, 0, 0, 0.1);
+  --fade-dark-md: rgba(0, 0, 0, 0.2);
+  --fade-dark-lg: rgba(0, 0, 0, 0.3);
+
+  --fade-grey-sm: rgba(121, 121, 121, 0.1);
+  --fade-grey-md: rgba(121, 121, 121, 0.2);
+  --fade-grey-lg: rgba(121, 121, 121, 0.3);
+
+  --fade-light-sm: rgba(255, 255, 255, 0.1);
+  --fade-light-md: rgba(255, 255, 255, 0.2);
+  --fade-light-lg: rgba(255, 255, 255, 0.3);
 }
 
 @media only screen and (min-width: 992px) {
