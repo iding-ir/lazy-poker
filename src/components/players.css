@@ -56,3 +56,12 @@
     min-height: 12rem;
   }
 }
+
+.players-add {
+  padding: var(--padding-md);
+  width: 100%;
+}
+
+#players-add {
+  width: 100%;
+}

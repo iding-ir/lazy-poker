@@ -12,9 +12,10 @@ class Player extends Component {
             <div key={key} className="players-player">
               <div className="players-title">
                 <button
+                  disabled={!this.props.canRemovePlayer}
                   className="players-remove waves-effect waves-light btn red"
                   onClick={() => {
-                    this.props.onRemove(player.id);
+                    this.props.onRemovePlayer(player.id);
                   }}
                 >
                   <i className="material-icons left"></i>
@@ -44,6 +45,17 @@ class Player extends Component {
             </div>
           );
         })}
+        <div className="players-add">
+          <button
+            id="players-add"
+            disabled={!this.props.canAddPlayer}
+            className="waves-effect waves-light btn red"
+            onClick={this.props.onAddPlayer}
+          >
+            <i className="material-icons left"></i>
+            Add Player
+          </button>
+        </div>
       </div>
     );
   }

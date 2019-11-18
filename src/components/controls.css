@@ -1,7 +1,7 @@
 .controls {
   display: grid;
   grid-gap: var(--padding-md);
-  grid-template-columns: [start deal-start] 1fr [deal-end autoplay-start] auto [autoplay-end logs-start] auto [logs-end end];
+  grid-template-columns: [start deal-start] 1fr [deal-end autoplay-start] auto [autoplay-end config-start] auto [config-end logs-start] auto [logs-end end];
   grid-template-rows: [start] auto [end];
 }
 
@@ -23,6 +23,11 @@
   grid-row: start/end;
 }
 
+.controls-config {
+  grid-column: config-start/config-end;
+  grid-row: start/end;
+}
+
 .controls-logs {
   grid-column: logs-start/logs-end;
   grid-row: start/end;
@@ -32,7 +37,7 @@
   .controls {
     display: grid;
     grid-gap: var(--padding-md);
-    grid-template-columns: [start deal-start] auto [deal-end autoplay-start] auto [autoplay-end spacer-start] 1fr [spacer-end logs-start] auto [logs-end end];
+    grid-template-columns: [start deal-start] auto [deal-end autoplay-start] auto [autoplay-end spacer-start] 1fr [spacer-end config-start] auto [config-end logs-start] auto [logs-end end];
     grid-template-rows: [start] auto [end];
   }
 
@@ -41,7 +46,7 @@
     grid-row: start/end;
   }
 
-  #controls-deal {
+  .controls-deal button {
     width: 18rem;
   }
 
@@ -52,6 +57,11 @@
 
   .controls-spacer {
     grid-column: spacer-start/spacer-end;
+    grid-row: start/end;
+  }
+
+  .controls-config {
+    grid-column: config-start/config-end;
     grid-row: start/end;
   }
 

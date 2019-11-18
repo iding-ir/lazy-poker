@@ -38,16 +38,16 @@ export const suits = [
 ];
 
 export const winningHands = [
-  "high-card",
-  "pair",
-  "two-pairs",
-  "three-of-a-kind",
-  "straight",
-  "flush",
-  "full-house",
-  "four-of-a-kind",
-  "straight-flush",
-  "royal-flush"
+  { hand: "high-card", points: 0 },
+  { hand: "pair", points: 1 },
+  { hand: "two-pairs", points: 2 },
+  { hand: "three-of-a-kind", points: 3 },
+  { hand: "straight", points: 5 },
+  { hand: "flush", points: 6 },
+  { hand: "full-house", points: 7 },
+  { hand: "four-of-a-kind", points: 10 },
+  { hand: "straight-flush", points: 20 },
+  { hand: "royal-flush", points: 30 }
 ];
 
 export const flushCondition = 5;
@@ -91,3 +91,6 @@ export const stages = [
     icon: "refresh"
   }
 ];
+
+export const minNumberOfPlayers = 1;
+export const maxNumberOfPlayers = 6;

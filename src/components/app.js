@@ -14,62 +14,51 @@ import {
   straightCondition,
   flushCondition,
   winningHands,
-  stages
+  stages,
+  minNumberOfPlayers,
+  maxNumberOfPlayers
 } from "./definitions";
 
 class App extends Component {
-  state = {
+  state = {};
+
+  constructor() {
+    super();
+  }
+
+  game = {
     stage: 0,
     dealer: [],
     deck: [null, null, null, null, null],
     logs: [],
     autoplay: false,
     disabled: false,
-    players: [
-      {
-        name: "Player 1",
-        id: "1",
-        round: {
-          cards: [null, null],
-          winner: false,
-          bests: [],
-          hand: undefined
-        },
-        points: 0
-      },
-      {
-        name: "Player 2",
-        id: "2",
-        round: {
-          cards: [null, null],
-          winner: false,
-          bests: [],
-          hand: undefined
-        },
-        points: 0
-      },
-      {
-        name: "Player 3",
-        id: "3",
-        round: {
-          cards: [null, null],
-          winner: false,
-          bests: [],
-          hand: undefined
-        },
-        points: 0
-      }
-    ]
+    players: [],
+    gameHasStarted: false
   };
 
-  componentDidMount() {
-    let dealer = this.populateDealer();
+  player = {
+    name: "Player",
+    id: "1",
+    round: {
+      cards: [null, null],
+      winner: false,
+      bests: [],
+      hand: undefined
+    },
+    points: 0
+  };
 
-    this.setState({ dealer });
+  componentWillMount() {
+    let state = this.generateState();
+
+    this.setState(state);
   }
 
+  componentDidMount() {}
+
   render() {
-    let { logs, deck, players } = this.state;
+    let { logs, deck, players, gameHasStarted } = this.state;
 
     return (
       <div className="app-container">
@@ -82,6 +71,7 @@ class App extends Component {
             state={this.state}
             onDeal={this.handleDeal}
             onAutoplay={this.handleAutoplay}
+            onRestart={this.handleRestart}
             logs={logs}
           />
         </div>
@@ -97,19 +87,71 @@ class App extends Component {
         <div className="app-players blue-grey lighten-5">
           <Players
             players={players}
-            onRemove={this.handleRemovePlayer}
+            onAddPlayer={this.handleAddPlayer}
+            onRemovePlayer={this.handleRemovePlayer}
             onChangeName={this.handleChangeName}
+            canAddPlayer={
+              players.length < maxNumberOfPlayers && !gameHasStarted
+            }
+            canRemovePlayer={players.length > minNumberOfPlayers}
           />
         </div>
       </div>
     );
   }
 
+  generateState = () => {
+    let state = JSON.parse(JSON.stringify(this.game));
+
+    state.players = this.populatePlayers(3);
+    state.dealer = this.populateDealer();
+
+    return state;
+  };
+
+  populatePlayers = number => {
+    let players = [];
+
+    for (let i = 1; i <= number; i++) {
+      let id = i.toString();
+      let name = "Player " + i;
+      let player = this.generatePlayer(id, name);
+
+      players.push(player);
+    }
+
+    return players;
+  };
+
+  generatePlayer = (id, name) => {
+    let player = JSON.parse(JSON.stringify(this.player));
+
+    player.name = name;
+    player.id = id;
+
+    return player;
+  };
+
+  populateDealer = () => {
+    let dealer = [];
+
+    marks.forEach(mark => {
+      suits.forEach(suit => {
+        let owner = "dealer";
+
+        dealer.push({ mark, ...suit, owner, highlight: false });
+      });
+    });
+
+    return dealer;
+  };
+
   handleDeal = () => {
+    const gameHasStarted = true;
     const stage =
       this.state.stage + 1 === stages.length ? 0 : this.state.stage + 1;
 
-    this.setState({ stage });
+    this.setState({ stage, gameHasStarted });
 
     switch (stages[stage].slug) {
       case "new-round":
@@ -149,6 +191,27 @@ class App extends Component {
     }
 
     this.setState({ autoplay });
+  };
+
+  handleRestart = () => {
+    let state = this.generateState();
+
+    this.setState(state);
+  };
+
+  handleAddPlayer = () => {
+    let players = [...this.state.players];
+    let number = players.length + 1;
+
+    if (number > maxNumberOfPlayers) return;
+
+    let id = number.toString();
+    let name = "Player " + number;
+    let player = this.generatePlayer(id, name);
+
+    players.push(player);
+
+    this.setState({ players });
   };
 
   handleRemovePlayer = id => {
@@ -194,20 +257,6 @@ class App extends Component {
       deck: [null, null, null, null, null],
       players
     });
-  };
-
-  populateDealer = () => {
-    let dealer = [];
-
-    marks.forEach(mark => {
-      suits.forEach(suit => {
-        let owner = "dealer";
-
-        dealer.push({ mark, ...suit, owner, highlight: false });
-      });
-    });
-
-    return dealer;
   };
 
   dealPreFlop = () => {
@@ -399,7 +448,7 @@ class App extends Component {
       }
 
       setTimeout(() => {
-        this.addLog({ text, icon: "insert_comment" }, reportDuration + 1000);
+        this.addLog(text, reportDuration + 1000);
 
         this.givePoints(player);
       }, index * reportDuration);
@@ -407,7 +456,9 @@ class App extends Component {
   };
 
   logBadge = hand => {
-    let points = winningHands.indexOf(hand);
+    let points = winningHands
+      .map(winningHand => winningHand.hand)
+      .indexOf(hand);
 
     return `<button class="btn-flat toast-action">${points} Points</button>`;
   };
@@ -510,13 +561,13 @@ class App extends Component {
     return cards;
   };
 
-  addLog = (log, duration) => {
-    M.toast({ html: log.text, displayLength: duration });
+  addLog = (text, duration) => {
+    M.toast({ html: text, displayLength: duration });
 
     let logs = [...this.state.logs];
 
     logs.unshift({
-      text: log.text,
+      text: text,
       icon: "insert_comment"
     });
 
@@ -531,7 +582,9 @@ class App extends Component {
 
     players.forEach(p => {
       if (p.id === player.id) {
-        p.points += winningHands.indexOf(player.round.hand);
+        p.points += winningHands
+          .map(winningHand => winningHand.hand)
+          .indexOf(player.round.hand);
       }
 
       p.round.cards.forEach(c => {
