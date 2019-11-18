@@ -1,13 +1,25 @@
 #toast-container {
-  top: auto !important;
-  right: 5% !important;
-  bottom: 5% !important;
-  z-index: 1001 !important;
+  top: auto;
+  right: 5%;
+  bottom: 5%;
+  z-index: 1001;
+  min-width: 36rem;
 }
 
 @media only screen and (max-width: 600px) {
   #toast-container {
-    min-width: 90% !important;
-    bottom: 5% !important;
+    min-width: 90%;
+    bottom: 5%;
   }
+}
+
+.toast {
+  min-height: unset;
+  padding: var(--padding-sm) var(--padding-lg);
+}
+
+.toast .toast-action {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0 0 0 var(--padding-lg);
 }

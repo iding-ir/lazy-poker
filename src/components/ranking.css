@@ -3,19 +3,23 @@
 }
 
 .ranking-table > thead > tr {
-  border-bottom: var(--border-thickness) solid var(--color-primary-dark) !important;
+  border-bottom: var(--border-thickness) solid var(--color-primary-dark);
+}
+
+.ranking-table > thead > tr > td {
+  padding: var(--padding-md) var(--padding-md);
 }
 
 .ranking-table > tbody > tr {
-  border: none !important;
+  border: none;
 }
 
 .ranking-table > tbody > tr:nth-of-type(2n + 1) {
-  background-color: var(--fade-grey-sm) !important;
+  background-color: var(--fade-grey-sm);
 }
 
 .ranking-table > tbody > tr:nth-of-type(2n) {
-  background-color: var(--fade-dark-sm) !important;
+  background-color: var(--fade-dark-sm);
 }
 
 .ranking-table > tbody > tr > td {

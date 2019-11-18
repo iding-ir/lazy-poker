@@ -6,7 +6,6 @@ import Players from "./players";
 import Ranking from "./ranking";
 import Deck from "./deck";
 import Controls from "./controls";
-import Logs from "./logs";
 import Navbar from "./navbar";
 import {
   colors,
@@ -83,9 +82,8 @@ class App extends Component {
             state={this.state}
             onDeal={this.handleDeal}
             onAutoplay={this.handleAutoplay}
+            logs={logs}
           />
-
-          <Logs logs={logs} />
         </div>
 
         <div className="app-ranking blue-grey lighten-5">

@@ -31,7 +31,6 @@
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
   grid-column: start/end;
   grid-row: ranking-start/ranking-end;
-  background-color: red;
 }
 
 .app-players {
