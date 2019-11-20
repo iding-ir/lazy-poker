@@ -19,14 +19,6 @@ body {
   height: 100%;
 }
 
-html {
-  font-size: 12px;
-}
-
-body {
-  line-height: 1.5;
-}
-
 #root {
   height: 100%;
 }

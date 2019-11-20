@@ -28,7 +28,7 @@ class Controls extends Component {
         <div className="controls-deal">
           <button
             id="controls-deal"
-            className="waves-effect waves-light btn pink"
+            className="waves-effect waves-light btn-large pink"
             disabled={dealIsDisabled}
             onClick={onDeal}
           >
@@ -38,7 +38,7 @@ class Controls extends Component {
 
           <button
             id="controls-autoplay"
-            className="waves-effect waves-light btn pink darken-2"
+            className="waves-effect waves-light btn-large pink darken-2"
             disabled={dealIsDisabled}
             onClick={onAutoplay}
           >
