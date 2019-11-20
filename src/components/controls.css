@@ -1,7 +1,7 @@
 .controls {
   display: grid;
   grid-gap: var(--padding-md);
-  grid-template-columns: [start deal-start] 1fr [deal-end autoplay-start] auto [autoplay-end config-start] auto [config-end logs-start] auto [logs-end end];
+  grid-template-columns: [start deal-start] 1fr [deal-end spacer-start] auto [spacer-end restart-start] auto [restart-end logs-start] auto [logs-end end];
   grid-template-rows: [start] auto [end];
 }
 
@@ -10,63 +10,72 @@
   grid-row: start/end;
 }
 
-.controls-deal > * {
-  height: 100%;
-}
-
-#controls-deal {
-  width: 100%;
-}
-
-.controls-autoplay {
-  grid-column: autoplay-start/autoplay-end;
+.controls-spacer {
+  display: none;
+  grid-column: spacer-start/spacer-end;
   grid-row: start/end;
 }
 
-.controls-config {
-  grid-column: config-start/config-end;
+.controls-restart {
+  grid-column: restart-start/restart-end;
   grid-row: start/end;
 }
 
 .controls-logs {
+  position: relative;
   grid-column: logs-start/logs-end;
   grid-row: start/end;
+}
+
+#controls-deal {
+  width: calc(100% - 4rem);
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+#controls-deal i {
+  display: none;
+}
+
+#controls-autoplay {
+  width: 4rem;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+#controls-restart {
+  width: 4rem;
+  height: 100%;
+}
+
+#controls-logs {
+  width: 4rem;
+  height: 100%;
+}
+
+.logs-counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  height: 2rem !important;
+  line-height: 2rem !important;
+  min-width: 2rem !important;
+  border-radius: 1rem !important;
+  transform: translate(0.5rem, -0.5rem);
 }
 
 @media only screen and (min-width: 600px) {
   .controls {
     display: grid;
     grid-gap: var(--padding-md);
-    grid-template-columns: [start deal-start] auto [deal-end autoplay-start] auto [autoplay-end spacer-start] 1fr [spacer-end config-start] auto [config-end logs-start] auto [logs-end end];
+    grid-template-columns: [start deal-start] auto [deal-end spacer-start] 1fr [spacer-end restart-start] auto [restart-end logs-start] auto [logs-end end];
     grid-template-rows: [start] auto [end];
   }
 
-  .controls-deal {
-    grid-column: deal-start/deal-end;
-    grid-row: start/end;
+  #controls-deal {
+    width: 15rem;
   }
 
-  .controls-deal button {
-    width: 18rem;
-  }
-
-  .controls-autoplay {
-    grid-column: autoplay-start/autoplay-end;
-    grid-row: start/end;
-  }
-
-  .controls-spacer {
-    grid-column: spacer-start/spacer-end;
-    grid-row: start/end;
-  }
-
-  .controls-config {
-    grid-column: config-start/config-end;
-    grid-row: start/end;
-  }
-
-  .controls-logs {
-    grid-column: logs-start/logs-end;
-    grid-row: start/end;
+  #controls-deal i {
+    display: inline;
   }
 }

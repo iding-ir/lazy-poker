@@ -92,5 +92,6 @@ export const stages = [
   }
 ];
 
+export const initialNumberOfPlayers = 2;
 export const minNumberOfPlayers = 1;
 export const maxNumberOfPlayers = 6;

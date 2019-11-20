@@ -15,6 +15,7 @@ import {
   flushCondition,
   winningHands,
   stages,
+  initialNumberOfPlayers,
   minNumberOfPlayers,
   maxNumberOfPlayers
 } from "./definitions";
@@ -31,9 +32,9 @@ class App extends Component {
     dealer: [],
     deck: [null, null, null, null, null],
     logs: [],
-    autoplay: false,
-    disabled: false,
     players: [],
+    autoplayIsEnabled: false,
+    dealIsDisabled: false,
     gameHasStarted: false
   };
 
@@ -55,13 +56,15 @@ class App extends Component {
     this.setState(state);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.runAutoplay();
+  }
 
   render() {
     let { logs, deck, players, gameHasStarted } = this.state;
 
     return (
-      <div className="app-container">
+      <div className="app-container blue-grey lighten-4">
         <header className="app-header">
           <Navbar />
         </header>
@@ -70,7 +73,7 @@ class App extends Component {
           <Controls
             state={this.state}
             onDeal={this.handleDeal}
-            onAutoplay={this.handleAutoplay}
+            onAutoplay={this.toggleAutoplay}
             onRestart={this.handleRestart}
             logs={logs}
           />
@@ -87,13 +90,13 @@ class App extends Component {
         <div className="app-players blue-grey lighten-5">
           <Players
             players={players}
-            onAddPlayer={this.handleAddPlayer}
-            onRemovePlayer={this.handleRemovePlayer}
-            onChangeName={this.handleChangeName}
             canAddPlayer={
               players.length < maxNumberOfPlayers && !gameHasStarted
             }
+            onAddPlayer={this.handleAddPlayer}
             canRemovePlayer={players.length > minNumberOfPlayers}
+            onRemovePlayer={this.handleRemovePlayer}
+            onChangeName={this.handleChangeName}
           />
         </div>
       </div>
@@ -103,7 +106,7 @@ class App extends Component {
   generateState = () => {
     let state = JSON.parse(JSON.stringify(this.game));
 
-    state.players = this.populatePlayers(3);
+    state.players = this.populatePlayers(initialNumberOfPlayers);
     state.dealer = this.populateDealer();
 
     return state;
@@ -113,7 +116,7 @@ class App extends Component {
     let players = [];
 
     for (let i = 1; i <= number; i++) {
-      let id = i.toString();
+      let id = i;
       let name = "Player " + i;
       let player = this.generatePlayer(id, name);
 
@@ -177,20 +180,20 @@ class App extends Component {
     }
   };
 
-  handleAutoplay = () => {
-    let autoplay = this.state.autoplay;
+  runAutoplay = () => {
+    setInterval(() => {
+      if (!this.state.autoplayIsEnabled) return;
+      if (this.state.dealIsDisabled) return;
 
-    if (autoplay) {
-      // autoplay.destroy();
+      this.handleDeal();
+    }, 2000);
+  };
 
-      autoplay = false;
-    } else {
-      autoplay = setInterval(() => {
-        document.getElementById("controls-deal").click();
-      }, 2000);
-    }
+  toggleAutoplay = () => {
+    let autoplayIsEnabled = !this.state.autoplayIsEnabled;
+    // let dealIsDisabled = autoplayIsEnabled && true;
 
-    this.setState({ autoplay });
+    this.setState({ autoplayIsEnabled });
   };
 
   handleRestart = () => {
@@ -205,8 +208,12 @@ class App extends Component {
 
     if (number > maxNumberOfPlayers) return;
 
-    let id = number.toString();
-    let name = "Player " + number;
+    let id =
+      this.state.players
+        .map(player => parseInt(player.id))
+        .sort((a, b) => b - a)[0] + 1;
+
+    let name = "Player " + id;
     let player = this.generatePlayer(id, name);
 
     players.push(player);
@@ -251,7 +258,7 @@ class App extends Component {
     let dealer = this.populateDealer();
 
     this.setState({
-      disabled: false,
+      dealIsDisabled: false,
       stage: 0,
       dealer,
       deck: [null, null, null, null, null],
@@ -307,10 +314,12 @@ class App extends Component {
     let players = [...this.state.players];
     let reportDuration = 3000;
 
-    this.setState({ disabled: true });
+    this.setState({ dealIsDisabled: true });
 
     setTimeout(() => {
-      this.setState({ disabled: false });
+      if (!this.state.gameHasStarted) return;
+
+      this.setState({ dealIsDisabled: false });
     }, players.length * reportDuration);
 
     players.forEach((player, index) => {
@@ -435,7 +444,7 @@ class App extends Component {
 
         let badge = this.logBadge(player.round.hand);
 
-        text = `${player.name} has a pair: ${cards1[0].mark}'s. ` + badge;
+        text = `${player.name} has a pair of ${cards1[0].mark}'s. ` + badge;
       } else {
         // high-card
 
@@ -448,6 +457,8 @@ class App extends Component {
       }
 
       setTimeout(() => {
+        if (!this.state.gameHasStarted) return;
+
         this.addLog(text, reportDuration + 1000);
 
         this.givePoints(player);

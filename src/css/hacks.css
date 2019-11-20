@@ -23,3 +23,28 @@
   margin-right: 0;
   padding: 0 0 0 var(--padding-lg);
 }
+
+.modal.open {
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+.modal-header {
+  padding: var(--padding-md) !important;
+  border-bottom: 1px solid var(--fade-dark-sm);
+  margin-bottom: var(--padding-md);
+}
+
+.modal-content {
+  flex-grow: 10;
+  overflow: auto;
+  padding: var(--padding-md) !important;
+}
+
+.modal-footer {
+  height: unset !important;
+  padding: var(--padding-md) !important;
+  border-top: 1px solid var(--fade-dark-sm);
+  margin-top: var(--padding-md);
+}

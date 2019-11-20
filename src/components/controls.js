@@ -18,29 +18,31 @@ class Controls extends Component {
   }
 
   render() {
-    let { disabled } = this.props.state;
+    let { onDeal, onAutoplay, onRestart, logs } = this.props;
+    let { dealIsDisabled, autoplayIsEnabled } = this.props.state;
     let { icon, button } = stages[this.props.state.stage];
+    let autoplayIcon = autoplayIsEnabled ? "stop" : "play";
 
     return (
       <div className="controls">
         <div className="controls-deal">
           <button
             id="controls-deal"
-            disabled={disabled}
-            className="waves-effect waves-light btn"
-            onClick={this.props.onDeal}
+            className="waves-effect waves-light btn-large pink"
+            disabled={dealIsDisabled}
+            onClick={onDeal}
           >
             <i className="material-icons left">{icon}</i>
             {button}
           </button>
-        </div>
 
-        <div className="controls-autoplay">
           <button
-            className="waves-effect waves-light btn btn-floating"
-            onClick={this.props.onAutoplay}
+            id="controls-autoplay"
+            className="waves-effect waves-light btn-large pink darken-2"
+            disabled={dealIsDisabled}
+            onClick={onAutoplay}
           >
-            <i className="material-icons left">refresh</i>
+            <i className="material-icons left">{autoplayIcon}</i>
           </button>
         </div>
 
@@ -48,7 +50,8 @@ class Controls extends Component {
 
         <div className="controls-restart">
           <button
-            className="btn-floating btn waves-effect waves-light red"
+            id="controls-restart"
+            className="waves-effect btn-flat"
             onClick={() => {
               let element = document.querySelector("#restart-modal");
 
@@ -59,15 +62,23 @@ class Controls extends Component {
           </button>
 
           <div id="restart-modal" className="modal">
+            <div className="modal-header">
+              <h5>Restart</h5>
+            </div>
+
             <div className="modal-content">
-              <h5>restart</h5>
+              <p>Are you sure you want to restart the game?</p>
             </div>
 
             <div className="modal-footer">
               <button
-                className="modal-close waves-effect waves-green btn-flat"
-                onClick={this.props.onRestart}
+                className="modal-close waves-effect btn-flat"
+                onClick={onRestart}
               >
+                Restart
+              </button>
+
+              <button className="modal-close waves-effect btn-flat">
                 Close
               </button>
             </div>
@@ -76,27 +87,34 @@ class Controls extends Component {
 
         <div className="controls-logs">
           <button
-            className="btn-floating btn waves-effect waves-light red"
+            id="controls-logs"
+            className="waves-effect btn-flat"
             onClick={() => {
               let element = document.querySelector("#logs-modal");
 
               M.Modal.getInstance(element).open();
             }}
-            disabled={!this.props.logs.length}
+            disabled={!logs.length}
           >
             <i className="material-icons">filter_none</i>
           </button>
 
-          <span className="badge new blue" data-badge-caption="logs">
-            {this.props.logs.length}
+          <span
+            className="logs-counter badge new blue"
+            data-badge-caption=""
+            style={{ display: !logs.length ? "none" : "block" }}
+          >
+            {logs.length}
           </span>
 
           <div id="logs-modal" className="modal">
-            <div className="modal-content">
+            <div className="modal-header">
               <h5>logs</h5>
+            </div>
 
+            <div className="modal-content">
               <ul className="collection">
-                {this.props.logs.map((log, index) => (
+                {logs.map((log, index) => (
                   <li className="collection-item" key={index}>
                     <i className="material-icons left">{log.icon}</i>
                     <span>{log.text}</span>
@@ -106,7 +124,7 @@ class Controls extends Component {
             </div>
 
             <div className="modal-footer">
-              <button className="modal-close waves-effect waves-green btn-flat">
+              <button className="modal-close waves-effect btn-flat">
                 Close
               </button>
             </div>

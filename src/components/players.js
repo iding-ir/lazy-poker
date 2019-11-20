@@ -1,56 +1,41 @@
 import React, { Component } from "react";
 import "./players.css";
-import Card from "./card";
+import Player from "./player";
 
-class Player extends Component {
+class Players extends Component {
   state = {};
   render() {
+    let {
+      players,
+      canAddPlayer,
+      onAddPlayer,
+      onRemovePlayer,
+      onChangeName,
+      canRemovePlayer
+    } = this.props;
+
     return (
       <div className="players">
-        {this.props.players.map((player, key) => {
-          return (
-            <div key={key} className="players-player">
-              <div className="players-title">
-                <button
-                  disabled={!this.props.canRemovePlayer}
-                  className="players-remove waves-effect waves-light btn red"
-                  onClick={() => {
-                    this.props.onRemovePlayer(player.id);
-                  }}
-                >
-                  <i className="material-icons left"></i>
-                </button>
+        <div className="players-container">
+          {players.map((player, key) => {
+            return (
+              <Player
+                key={key}
+                player={player}
+                onRemovePlayer={onRemovePlayer}
+                onChangeName={onChangeName}
+                canRemovePlayer={canRemovePlayer}
+              />
+            );
+          })}
+        </div>
 
-                <input
-                  className="players-name"
-                  value={player.name}
-                  onChange={event =>
-                    this.props.onChangeName(player, event.target.value)
-                  }
-                />
-
-                <span
-                  className="players-points badge left new"
-                  data-badge-caption="Points"
-                >
-                  {player.points}
-                </span>
-              </div>
-
-              <div className="players-cards">
-                {player.round.cards.map((card, index) => {
-                  return <Card key={index} card={card} />;
-                })}
-              </div>
-            </div>
-          );
-        })}
         <div className="players-add">
           <button
             id="players-add"
-            disabled={!this.props.canAddPlayer}
-            className="waves-effect waves-light btn red"
-            onClick={this.props.onAddPlayer}
+            disabled={!canAddPlayer}
+            className="waves-effect waves-light btn-large btn-floating red"
+            onClick={onAddPlayer}
           >
             <i className="material-icons left"></i>
             Add Player
@@ -61,4 +46,4 @@ class Player extends Component {
   }
 }
 
-export default Player;
+export default Players;

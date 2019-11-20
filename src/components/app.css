@@ -6,6 +6,10 @@
   height: 100%;
 }
 
+.app-container > * {
+  border-radius: var(--border-radius);
+}
+
 .app-header {
   margin-bottom: var(--padding-md);
   grid-column: pad-start/pad-end;

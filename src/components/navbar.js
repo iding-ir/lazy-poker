@@ -6,7 +6,7 @@ class Navbar extends Component {
   render() {
     return (
       <React.Fragment>
-        <nav className="indigo darken-2">
+        <nav className="blue-grey darken-1">
           <div className="nav-wrapper">
             <div className="navbar-container">
               <a href="https://github.com/iding-ir" className="brand-logo">

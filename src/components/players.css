@@ -1,6 +1,14 @@
 .players {
   display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.players-container {
+  display: flex;
   flex-wrap: wrap;
+  flex-grow: 10;
+  overflow: auto;
 }
 
 .players-player {
@@ -58,10 +66,12 @@
 }
 
 .players-add {
-  padding: var(--padding-md);
-  width: 100%;
+  position: relative;
+  height: 10px;
 }
 
 #players-add {
-  width: 100%;
+  position: absolute;
+  bottom: var(--padding-md);
+  right: var(--padding-md);
 }
