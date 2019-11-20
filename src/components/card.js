@@ -4,32 +4,23 @@ import "./card.css";
 class Card extends Component {
   state = {};
   render() {
-    if (this.props.card) {
-      const cardIcon = "cards-icon-" + this.props.card.shape;
-      const cardClass = "cards-card" + this.getSide();
+    let { mark, shape, highlight } = this.props.card
+      ? this.props.card
+      : { mark: "", shape: "none", highlight: false };
 
-      return (
-        <React.Fragment>
-          <div className={cardClass} data-highlight={this.props.card.highlight}>
-            <div>{this.props.card.mark}</div>
-            <div className={cardIcon}></div>
-            <div>{this.props.card.mark}</div>
-            <div className="cards-back"></div>
-          </div>
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <div className="cards-card">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div className="cards-back"></div>
-          </div>
-        </React.Fragment>
-      );
-    }
+    const cardIcon = "cards-icon-" + shape;
+    const cardClass = "cards-card" + this.getSide();
+
+    return (
+      <React.Fragment>
+        <div className={cardClass} data-highlight={highlight}>
+          <div>{mark}</div>
+          <div className={cardIcon}></div>
+          <div>{mark}</div>
+          <div className="cards-back"></div>
+        </div>
+      </React.Fragment>
+    );
   }
 
   getSide = () => {

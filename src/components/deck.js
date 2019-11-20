@@ -5,10 +5,12 @@ import Card from "./card";
 class Deck extends Component {
   state = {};
   render() {
+    let { deck } = this.props;
+
     return (
       <div className="deck">
         <div className="deck-cards">
-          {this.props.deck.map((card, index) => {
+          {deck.map((card, index) => {
             return <Card key={index} card={card} />;
           })}
         </div>

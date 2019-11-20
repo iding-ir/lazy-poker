@@ -1,8 +1,8 @@
 :root {
-  --color-primary-light: #1996d8;
-  --color-primary-dark: #1377b8;
-  --color-secondary-light: #68c16d;
-  --color-secondary-dark: #4e9d54;
+  --color-primary-light: #e91e63;
+  --color-primary-dark: #c2185b;
+  --color-secondary-light: #03a9f4;
+  --color-secondary-dark: #0288d1;
 
   --color-lighter: #eceff1;
   --color-light: #cfd8dc;
@@ -16,9 +16,9 @@
   --border-radius: 4px;
   --border-thickness: 2px;
 
-  --box-shadow-sm: 0 0 4px rgba(0, 0, 0, 0.1);
-  --box-shadow-md: 0 0 4px rgba(0, 0, 0, 0.2);
-  --box-shadow-lg: 0 0 4px rgba(0, 0, 0, 0.3);
+  --box-shadow-sm: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  --box-shadow-md: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  --box-shadow-lg: 2px 2px 4px rgba(0, 0, 0, 0.3);
 
   --fade-dark-sm: rgba(0, 0, 0, 0.1);
   --fade-dark-md: rgba(0, 0, 0, 0.2);

@@ -34,7 +34,7 @@ class Players extends Component {
           <button
             id="players-add"
             disabled={!canAddPlayer}
-            className="waves-effect waves-light btn-large btn-floating red"
+            className="waves-effect waves-light btn-large btn-floating pink"
             onClick={onAddPlayer}
           >
             <i className="material-icons left"></i>

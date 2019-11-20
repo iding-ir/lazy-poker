@@ -23,10 +23,6 @@ import {
 class App extends Component {
   state = {};
 
-  constructor() {
-    super();
-  }
-
   game = {
     stage: 0,
     dealer: [],
@@ -237,7 +233,7 @@ class App extends Component {
     let players = [...this.state.players];
 
     players.forEach(p => {
-      if (p.id === player.id) p.name = name;
+      if (p.id === player.id && name.length <= 15) p.name = name;
     });
 
     this.setState({ players });

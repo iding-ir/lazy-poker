@@ -27,8 +27,8 @@ class Player extends Component {
             />
 
             <span
-              className="players-points badge left new"
-              data-badge-caption="Points"
+              className="players-points badge light-blue new"
+              data-badge-caption=""
             >
               {player.points}
             </span>

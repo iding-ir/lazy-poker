@@ -4,6 +4,8 @@ import "./ranking.css";
 class Ranking extends Component {
   state = {};
   render() {
+    let players = [...this.props.players];
+
     return (
       <table className="ranking-table">
         <thead>
@@ -14,10 +16,11 @@ class Ranking extends Component {
         </thead>
 
         <tbody>
-          {this.props.players
+          {players
             .sort((a, b) => {
               return b.points - a.points;
             })
+            .slice(0, 3)
             .map((player, index) => {
               return (
                 <tr key={index}>

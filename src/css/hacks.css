@@ -48,3 +48,11 @@
   border-top: 1px solid var(--fade-dark-sm);
   margin-top: var(--padding-md);
 }
+
+input:focus {
+  border-color: var(--color-secondary-light) !important;
+}
+
+nav .brand-logo {
+  font-size: 1.5rem;
+}
