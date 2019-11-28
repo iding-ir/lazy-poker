@@ -7,10 +7,6 @@
     "name": "Aydin Ghane Kh."
   },
   "homepage": "http://lazy-poker.iding.ir",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/iding-ir/lazy-poker.git"
-  },
   "keywords": [
     "react", "poker"
   ],
