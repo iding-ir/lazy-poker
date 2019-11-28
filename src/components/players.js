@@ -11,6 +11,7 @@ class Players extends Component {
       onAddPlayer,
       onRemovePlayer,
       onChangeName,
+      onCheckName,
       canRemovePlayer
     } = this.props;
 
@@ -24,6 +25,7 @@ class Players extends Component {
                 player={player}
                 onRemovePlayer={onRemovePlayer}
                 onChangeName={onChangeName}
+                onCheckName={onCheckName}
                 canRemovePlayer={canRemovePlayer}
               />
             );
@@ -37,8 +39,7 @@ class Players extends Component {
             className="waves-effect waves-light btn-large btn-floating pink"
             onClick={onAddPlayer}
           >
-            <i className="material-icons left"></i>
-            Add Player
+            <i className="material-icons left">add</i>
           </button>
         </div>
       </div>

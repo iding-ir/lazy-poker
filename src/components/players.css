@@ -7,6 +7,7 @@
 .players-container {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-evenly;
   flex-grow: 10;
   overflow: auto;
 }
@@ -22,33 +23,44 @@
   }
 }
 
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1440px) {
   .players-player {
     width: calc(100% / 4);
   }
 }
 
+@media only screen and (min-width: 2500px) {
+  .players-player {
+    width: calc(100% / 6);
+  }
+}
+
 .players-player .players-title {
   display: flex;
+  border-radius: 1.5rem;
+  overflow: hidden;
 }
 
 .players-player .players-title > * {
-  height: 2rem;
-  line-height: 2rem;
+  height: 3rem;
+  line-height: 3rem;
   margin: 0 var(--padding-md) 0 0;
 }
 
 .players-player .players-name {
   flex-grow: 10;
+  width: 10px;
 }
 
 .players-player .players-points {
+  font-size: 1rem !important;
   margin-right: 0;
 }
 
 .players-cards {
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
   min-height: 6rem;
   padding: var(--padding-md) 0 0 0;
 }
@@ -65,6 +77,12 @@
   }
 }
 
+@media only screen and (min-width: 1200px) {
+  .players-cards {
+    min-height: 15rem;
+  }
+}
+
 .players-add {
   position: relative;
   height: 10px;
@@ -74,4 +92,6 @@
   position: absolute;
   bottom: var(--padding-md);
   right: var(--padding-md);
+  width: 5rem;
+  height: 5rem;
 }

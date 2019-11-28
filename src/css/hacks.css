@@ -33,18 +33,18 @@
 .modal-header {
   padding: var(--padding-md) !important;
   border-bottom: 1px solid var(--fade-dark-sm);
-  margin-bottom: var(--padding-md);
+  padding: var(--padding-md) var(--padding-lg) !important;
 }
 
 .modal-content {
   flex-grow: 10;
   overflow: auto;
-  padding: var(--padding-md) !important;
+  padding: var(--padding-md) var(--padding-lg) !important;
 }
 
 .modal-footer {
   height: unset !important;
-  padding: var(--padding-md) !important;
+  padding: var(--padding-md) var(--padding-lg) !important;
   border-top: 1px solid var(--fade-dark-sm);
   margin-top: var(--padding-md);
 }
@@ -53,6 +53,10 @@ input:focus {
   border-color: var(--color-secondary-light) !important;
 }
 
-nav .brand-logo {
-  font-size: 1.5rem;
+.btn-large {
+  padding: 0 16px !important;
+}
+
+.btn-large.btn-floating {
+  padding: 0 !important;
 }

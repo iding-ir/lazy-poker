@@ -21,7 +21,7 @@ class Controls extends Component {
     let { onDeal, onAutoplay, onRestart, logs } = this.props;
     let { dealIsDisabled, autoplayIsEnabled } = this.props.state;
     let { icon, button } = stages[this.props.state.stage];
-    let autoplayIcon = autoplayIsEnabled ? "stop" : "play";
+    let autoplayIcon = autoplayIsEnabled ? "pause" : "play_arrow";
 
     return (
       <div className="controls">
@@ -51,14 +51,14 @@ class Controls extends Component {
         <div className="controls-restart">
           <button
             id="controls-restart"
-            className="waves-effect btn-flat"
+            className="waves-effect btn-large blue"
             onClick={() => {
               let element = document.querySelector("#restart-modal");
 
               M.Modal.getInstance(element).open();
             }}
           >
-            <i className="material-icons left">restart</i>
+            <i className="material-icons">refresh</i>
           </button>
 
           <div id="restart-modal" className="modal">
@@ -88,7 +88,7 @@ class Controls extends Component {
         <div className="controls-logs">
           <button
             id="controls-logs"
-            className="waves-effect btn-flat"
+            className="waves-effect btn-large blue"
             onClick={() => {
               let element = document.querySelector("#logs-modal");
 
@@ -100,7 +100,7 @@ class Controls extends Component {
           </button>
 
           <span
-            className="logs-counter badge new blue"
+            className="logs-counter badge new pink"
             data-badge-caption=""
             style={{ display: !logs.length ? "none" : "block" }}
           >
@@ -109,15 +109,16 @@ class Controls extends Component {
 
           <div id="logs-modal" className="modal">
             <div className="modal-header">
-              <h5>logs</h5>
+              <h5>Logs</h5>
             </div>
 
             <div className="modal-content">
               <ul className="collection">
                 {logs.map((log, index) => (
-                  <li className="collection-item" key={index}>
-                    <i className="material-icons left">{log.icon}</i>
-                    <span>{log.text}</span>
+                  <li className="collection-item logs-item" key={index}>
+                    <i className="material-icons left blue-text">{log.icon}</i>
+
+                    <div dangerouslySetInnerHTML={{ __html: log.text }}></div>
                   </li>
                 ))}
               </ul>

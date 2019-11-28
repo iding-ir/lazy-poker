@@ -17,14 +17,16 @@ class Card extends Component {
           <div>{mark}</div>
           <div className={cardIcon}></div>
           <div>{mark}</div>
-          <div className="cards-back"></div>
+          <div className="cards-back">
+            <img src="/assets/images/card.png" alt="" />
+          </div>
         </div>
       </React.Fragment>
     );
   }
 
   getSide = () => {
-    return this.props.card === null ? "" : " cards-hidden";
+    return this.props.card === null ? "" : " cards-visible";
   };
 }
 

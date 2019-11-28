@@ -1,4 +1,6 @@
 .navbar-container {
+  display: flex;
+  justify-content: space-between;
   margin: 0 auto;
   width: 100%;
 }
@@ -19,4 +21,31 @@
   .navbar-container {
     width: calc(100% - 2 * (10rem + var(--padding-md)));
   }
+}
+
+nav .logo {
+  display: flex;
+  font-size: 1.6rem;
+}
+
+nav .logo span {
+  width: 4rem;
+  margin-right: var(--padding-md);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-image: url("/assets/images/logo.svg");
+}
+
+.github {
+  display: flex;
+}
+
+.github span {
+  width: 4rem;
+  margin-left: var(--padding-md);
+  background-position: center;
+  background-size: 75%;
+  background-repeat: no-repeat;
+  background-image: url("/assets/images/github.svg");
 }

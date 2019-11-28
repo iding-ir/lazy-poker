@@ -41,16 +41,6 @@
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
-#controls-restart {
-  width: 4rem;
-  height: 100%;
-}
-
-#controls-logs {
-  width: 4rem;
-  height: 100%;
-}
-
 .logs-counter {
   position: absolute;
   top: 0;
@@ -61,6 +51,24 @@
   min-width: 2rem !important;
   border-radius: 1rem !important;
   transform: translate(0.5rem, -0.5rem);
+}
+
+.logs-item {
+  display: flex;
+}
+
+.logs-item * {
+  line-height: 3rem !important;
+}
+
+.logs-item > div {
+  flex-grow: 10;
+}
+
+.logs-item span {
+  float: right;
+  color: var(--color-primary-dark);
+  cursor: default;
 }
 
 @media only screen and (min-width: 600px) {

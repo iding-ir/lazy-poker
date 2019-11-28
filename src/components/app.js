@@ -60,12 +60,12 @@ class App extends Component {
     let { logs, deck, players, gameHasStarted } = this.state;
 
     return (
-      <div className="app-container blue-grey lighten-4">
+      <div className="app-container">
         <header className="app-header">
           <Navbar />
         </header>
 
-        <div className="app-controls blue-grey lighten-5">
+        <div className="app-controls">
           <Controls
             state={this.state}
             onDeal={this.handleDeal}
@@ -75,15 +75,15 @@ class App extends Component {
           />
         </div>
 
-        <div className="app-ranking blue-grey lighten-5">
+        <div className="app-ranking">
           <Ranking players={players} />
         </div>
 
-        <div className="app-deck blue-grey lighten-5">
+        <div className="app-deck">
           <Deck deck={deck} />
         </div>
 
-        <div className="app-players blue-grey lighten-5">
+        <div className="app-players">
           <Players
             players={players}
             canAddPlayer={
@@ -93,6 +93,7 @@ class App extends Component {
             canRemovePlayer={players.length > minNumberOfPlayers}
             onRemovePlayer={this.handleRemovePlayer}
             onChangeName={this.handleChangeName}
+            onCheckName={this.handleCheckName}
           />
         </div>
       </div>
@@ -233,10 +234,16 @@ class App extends Component {
     let players = [...this.state.players];
 
     players.forEach(p => {
-      if (p.id === player.id && name.length <= 15) p.name = name;
+      if (p.id === player.id && name.length <= 20) p.name = name;
     });
 
     this.setState({ players });
+  };
+
+  handleCheckName = (player, name) => {
+    if (name === "") name = "Unnamed card warrior";
+
+    this.handleChangeName(player, name);
   };
 
   refreshRound = () => {
@@ -467,7 +474,7 @@ class App extends Component {
       .map(winningHand => winningHand.hand)
       .indexOf(hand);
 
-    return `<button class="btn-flat toast-action">${points} Points</button>`;
+    return `<span class="btn-flat toast-action">${points} Points</span>`;
   };
 
   sortCardsByMarkDescending = cards => {

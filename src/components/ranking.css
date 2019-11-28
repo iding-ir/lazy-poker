@@ -1,13 +1,16 @@
 .ranking-table {
   height: 100%;
+  background-color: rgba(255, 255, 255, 1);
 }
 
 .ranking-table > thead > tr {
   border-bottom: var(--border-thickness) solid var(--color-secondary-light);
 }
 
-.ranking-table > thead > tr > td {
-  padding: var(--padding-md) var(--padding-md);
+.ranking-table > thead > tr > th {
+  font-size: 1.1rem;
+  line-height: 3;
+  padding: 0 var(--padding-md);
 }
 
 .ranking-table > tbody > tr {
@@ -23,5 +26,19 @@
 }
 
 .ranking-table > tbody > tr > td {
+  font-size: 1rem;
+  line-height: 2;
   padding: 0 var(--padding-md);
+}
+
+@media only screen and (min-width: 992px) {
+  .ranking-table > thead > tr > th {
+    font-size: 1.2rem;
+    line-height: 4;
+  }
+
+  .ranking-table > tbody > tr > td {
+    font-size: 1.1rem;
+    line-height: 3;
+  }
 }

@@ -4,10 +4,14 @@
   grid-template-columns: [pad-start] 0 [start] 1fr [end] 0 [pad-end];
   grid-template-rows: [header-start] auto [header-end controls-start] auto [controls-end deck-start] auto [deck-end ranking-start] auto [ranking-end players-start] 1fr [players-end];
   height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-image: url("/assets/images/bg.jpg");
 }
 
 .app-container > * {
   border-radius: var(--border-radius);
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .app-header {
@@ -18,21 +22,21 @@
 
 .app-controls {
   padding: var(--padding-md);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--box-shadow-md);
   grid-column: start/end;
   grid-row: controls-start/controls-end;
 }
 
 .app-deck {
   padding: var(--padding-md);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--box-shadow-md);
   grid-column: start/end;
   grid-row: deck-start/deck-end;
 }
 
 .app-ranking {
   padding: var(--padding-md);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--box-shadow-md);
   grid-column: start/end;
   grid-row: ranking-start/ranking-end;
 }
@@ -40,7 +44,7 @@
 .app-players {
   overflow: auto;
   margin-bottom: var(--padding-md);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--box-shadow-md);
   grid-column: start/end;
   grid-row: players-start/players-end;
 }
@@ -79,14 +83,14 @@
 
 @media only screen and (min-width: 1200px) {
   .app-container {
-    grid-template-columns: [pad-start] 5rem [start] 1fr [ranking-start] 22rem [ranking-end end] 5rem [pad-end];
+    grid-template-columns: [pad-start] 3rem [start] 1fr [ranking-start] 20rem [ranking-end end] 3rem [pad-end];
     grid-template-rows: [header-start] auto [header-end controls-start] auto [controls-end deck-start] auto [deck-end players-start] 1fr [players-end];
   }
 }
 
 @media only screen and (min-width: 1440px) {
   .app-container {
-    grid-template-columns: [pad-start] 10rem [start] 1fr [ranking-start] 26rem [ranking-end end] 10rem [pad-end];
+    grid-template-columns: [pad-start] 10rem [start] 1fr [ranking-start] 22rem [ranking-end end] 10rem [pad-end];
     grid-template-rows: [header-start] auto [header-end controls-start] auto [controls-end deck-start] auto [deck-end players-start] 1fr [players-end];
   }
 }

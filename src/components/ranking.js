@@ -10,8 +10,8 @@ class Ranking extends Component {
       <table className="ranking-table">
         <thead>
           <tr>
-            <td>Player</td>
-            <td>Points</td>
+            <th>Player</th>
+            <th>Points</th>
           </tr>
         </thead>
 
