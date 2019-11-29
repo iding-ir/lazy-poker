@@ -1,15 +1,18 @@
 {
   "name": "lazy-poker",
   "version": "1.0.0",
-  "description": "React and Materialize poker developed to demonstrate my front-end skills.",
-  "private": true,
-  "author": {
-    "name": "Aydin Ghane Kh."
-  },
+  "description": "",
   "homepage": "http://lazy-poker.iding.ir",
   "keywords": [
     "react", "poker"
   ],
+  "author": {
+    "name": "Aydin Ghane Kh.",
+    "email": "aydin.ghane.kh@gmail.com",
+    "url": "http://iding.ir"
+  },
+  "private": true,
+  "license": "UNLICENSED",
   "dependencies": {
     "materialize-css": "^1.0.0-rc.2",
     "react": "^16.10.2",
