@@ -1,29 +1,35 @@
 {
   "name": "lazy-poker",
   "version": "1.0.0",
-  "description": "",
-  "homepage": "http://lazy-poker.iding.ir",
+  "description": "Sit back and watch yourself play Texas Hold'em like a pro.",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iding-ir/lazy-poker.git"
+  },
   "keywords": [
-    "react", "poker"
+    "poker", "react"
   ],
   "author": {
     "name": "Aydin Ghane Kh.",
     "email": "aydin.ghane.kh@gmail.com",
     "url": "http://iding.ir"
   },
-  "private": true,
-  "license": "UNLICENSED",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iding-ir/lazy-poker/issues"
+  },
+  "homepage": "https://github.com/iding-ir/lazy-poker#readme",
   "dependencies": {
     "materialize-css": "^1.0.0-rc.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "3.2.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
