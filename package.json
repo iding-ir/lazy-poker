@@ -1,6 +1,6 @@
 {
   "name": "lazy-poker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sit back and watch yourself play Texas Hold'em like a pro.",
   "scripts": {
     "start": "react-scripts start",
