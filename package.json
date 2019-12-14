@@ -13,7 +13,8 @@
     "url": "git+https://github.com/iding-ir/lazy-poker.git"
   },
   "keywords": [
-    "poker", "react"
+    "poker",
+    "react"
   ],
   "author": {
     "name": "Aydin Ghane Kh.",
@@ -24,7 +25,6 @@
   "bugs": {
     "url": "https://github.com/iding-ir/lazy-poker/issues"
   },
-  "homepage": "https://github.com/iding-ir/lazy-poker#readme",
   "dependencies": {
     "materialize-css": "^1.0.0-rc.2",
     "react": "^16.10.2",
