@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import "./ranking.css";
 
 class Ranking extends Component {

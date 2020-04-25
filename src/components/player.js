@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import Card from "./card";
 
 class Player extends Component {
@@ -9,7 +10,7 @@ class Player extends Component {
       canRemovePlayer,
       onRemovePlayer,
       onChangeName,
-      onCheckName
+      onCheckName,
     } = this.props;
 
     return (
@@ -29,8 +30,8 @@ class Player extends Component {
             <input
               className="players-name"
               value={player.name}
-              onChange={event => onChangeName(player, event.target.value)}
-              onBlur={event => onCheckName(player, event.target.value)}
+              onChange={(event) => onChangeName(player, event.target.value)}
+              onBlur={(event) => onCheckName(player, event.target.value)}
             />
 
             <span

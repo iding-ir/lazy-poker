@@ -15,26 +15,26 @@ export const marks = [
   "J",
   "Q",
   "K",
-  "A"
+  "A",
 ];
 
 export const suits = [
   {
     shape: "diamond",
-    color: "red"
+    color: "red",
   },
   {
     shape: "club",
-    color: "black"
+    color: "black",
   },
   {
     shape: "heart",
-    color: "red"
+    color: "red",
   },
   {
     shape: "spade",
-    color: "black"
-  }
+    color: "black",
+  },
 ];
 
 export const winningHands = [
@@ -47,7 +47,7 @@ export const winningHands = [
   { hand: "full-house", points: 7 },
   { hand: "four-of-a-kind", points: 10 },
   { hand: "straight-flush", points: 20 },
-  { hand: "royal-flush", points: 30 }
+  { hand: "royal-flush", points: 30 },
 ];
 
 export const flushCondition = 5;
@@ -58,38 +58,38 @@ export const stages = [
     slug: "new-round",
     title: "New Round",
     button: "Deal Preflop",
-    icon: "filter_2"
+    icon: "filter_2",
   },
   {
     slug: "preflop",
     title: "Preflop",
     button: "Deal Flop",
-    icon: "filter_3"
+    icon: "filter_3",
   },
   {
     slug: "flop",
     title: "Flop",
     button: "Deal Turn",
-    icon: "filter_1"
+    icon: "filter_1",
   },
   {
     slug: "turn",
     title: "Turn",
     button: "Deal River",
-    icon: "filter_1"
+    icon: "filter_1",
   },
   {
     slug: "river",
     title: "River",
     button: "See Result",
-    icon: "flare"
+    icon: "flare",
   },
   {
     slug: "result",
     title: "Result",
     button: "New Round",
-    icon: "refresh"
-  }
+    icon: "refresh",
+  },
 ];
 
 export const initialNumberOfPlayers = 2;

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import "./players.css";
 import Player from "./player";
 
@@ -12,7 +13,7 @@ class Players extends Component {
       onRemovePlayer,
       onChangeName,
       onCheckName,
-      canRemovePlayer
+      canRemovePlayer,
     } = this.props;
 
     return (

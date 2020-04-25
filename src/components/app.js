@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "materialize-css/dist/css/materialize.min.css";
 import M from "materialize-css";
+
 import "./app.css";
 import Players from "./players";
 import Ranking from "./ranking";
@@ -17,7 +18,7 @@ import {
   stages,
   initialNumberOfPlayers,
   minNumberOfPlayers,
-  maxNumberOfPlayers
+  maxNumberOfPlayers,
 } from "./definitions";
 
 class App extends Component {
@@ -31,7 +32,7 @@ class App extends Component {
     players: [],
     autoplayIsEnabled: false,
     dealIsDisabled: false,
-    gameHasStarted: false
+    gameHasStarted: false,
   };
 
   player = {
@@ -41,9 +42,9 @@ class App extends Component {
       cards: [null, null],
       winner: false,
       bests: [],
-      hand: undefined
+      hand: undefined,
     },
-    points: 0
+    points: 0,
   };
 
   componentWillMount() {
@@ -109,7 +110,7 @@ class App extends Component {
     return state;
   };
 
-  populatePlayers = number => {
+  populatePlayers = (number) => {
     let players = [];
 
     for (let i = 1; i <= number; i++) {
@@ -135,8 +136,8 @@ class App extends Component {
   populateDealer = () => {
     let dealer = [];
 
-    marks.forEach(mark => {
-      suits.forEach(suit => {
+    marks.forEach((mark) => {
+      suits.forEach((suit) => {
         let owner = "dealer";
 
         dealer.push({ mark, ...suit, owner, highlight: false });
@@ -207,7 +208,7 @@ class App extends Component {
 
     let id =
       this.state.players
-        .map(player => parseInt(player.id))
+        .map((player) => parseInt(player.id))
         .sort((a, b) => b - a)[0] + 1;
 
     let name = "Player " + id;
@@ -218,12 +219,12 @@ class App extends Component {
     this.setState({ players });
   };
 
-  handleRemovePlayer = id => {
+  handleRemovePlayer = (id) => {
     let currentPlayers = [...this.state.players];
 
     if (currentPlayers.length === 1) return;
 
-    let players = currentPlayers.filter(player => {
+    let players = currentPlayers.filter((player) => {
       return player.id === id ? false : true;
     });
 
@@ -233,7 +234,7 @@ class App extends Component {
   handleChangeName = (player, name) => {
     let players = [...this.state.players];
 
-    players.forEach(p => {
+    players.forEach((p) => {
       if (p.id === player.id && name.length <= 20) p.name = name;
     });
 
@@ -247,12 +248,12 @@ class App extends Component {
   };
 
   refreshRound = () => {
-    const players = this.state.players.map(player => {
+    const players = this.state.players.map((player) => {
       player.round = {
         cards: [null, null],
         winner: false,
         bests: [],
-        hand: undefined
+        hand: undefined,
       };
 
       return player;
@@ -265,14 +266,14 @@ class App extends Component {
       stage: 0,
       dealer,
       deck: [null, null, null, null, null],
-      players
+      players,
     });
   };
 
   dealPreFlop = () => {
     const cardsPerUser = 2;
 
-    const players = this.state.players.map(player => {
+    const players = this.state.players.map((player) => {
       for (let i = 0; i < cardsPerUser; i++) {
         const card = this.getRandomCard();
 
@@ -289,7 +290,7 @@ class App extends Component {
     this.setState({ players });
   };
 
-  dealToDeck = number => {
+  dealToDeck = (number) => {
     const deck = [...this.state.deck];
 
     for (let i = 0; i < number; i++) {
@@ -330,7 +331,7 @@ class App extends Component {
 
       const cards = this.sortCardsByMarkDescending([
         ...player.round.cards,
-        ...this.state.deck
+        ...this.state.deck,
       ]);
 
       let straight = this.checkStraight(cards);
@@ -469,27 +470,27 @@ class App extends Component {
     });
   };
 
-  logBadge = hand => {
+  logBadge = (hand) => {
     let points = winningHands
-      .map(winningHand => winningHand.hand)
+      .map((winningHand) => winningHand.hand)
       .indexOf(hand);
 
     return `<span class="btn-flat toast-action">${points} Points</span>`;
   };
 
-  sortCardsByMarkDescending = cards => {
+  sortCardsByMarkDescending = (cards) => {
     return [...cards].sort((a, b) => {
       return marks.indexOf(b.mark) - marks.indexOf(a.mark);
     });
   };
 
-  sortCardsByMarkAscending = cards => {
+  sortCardsByMarkAscending = (cards) => {
     return [...cards].sort((a, b) => {
       return marks.indexOf(a.mark) - marks.indexOf(b.mark);
     });
   };
 
-  checkStraight = cards => {
+  checkStraight = (cards) => {
     let uniqueCards = this.removeDuplicateCardsByMark(cards);
     let counter = 1;
     let result = [];
@@ -517,11 +518,11 @@ class App extends Component {
     return result.length === straightCondition ? result : false;
   };
 
-  checkFlush = cards => {
+  checkFlush = (cards) => {
     let isFlush = false;
 
-    colors.forEach(color => {
-      let match = cards.filter(card => {
+    colors.forEach((color) => {
+      let match = cards.filter((card) => {
         return card.color === color;
       });
 
@@ -534,16 +535,16 @@ class App extends Component {
 
   getSimilarCardsByMark = (cards, number) => {
     let groups = this.groupByMark(cards);
-    let selected = groups.filter(group => group.length === number);
+    let selected = groups.filter((group) => group.length === number);
 
     return selected;
   };
 
-  groupByMark = cards => {
+  groupByMark = (cards) => {
     let groups = [];
 
-    marks.forEach(mark => {
-      let group = cards.filter(card => card.mark === mark);
+    marks.forEach((mark) => {
+      let group = cards.filter((card) => card.mark === mark);
 
       if (group.length) groups.unshift(group);
     });
@@ -551,10 +552,10 @@ class App extends Component {
     return groups;
   };
 
-  removeDuplicateCardsByMark = cards => {
+  removeDuplicateCardsByMark = (cards) => {
     let output = {};
 
-    cards.forEach(item => {
+    cards.forEach((item) => {
       output[item.mark] = item;
     });
 
@@ -564,13 +565,13 @@ class App extends Component {
   addHighCards = (from, to) => {
     let combined = [...to, ...from];
 
-    let stringifiedCard = combined.map(item => JSON.stringify(item));
+    let stringifiedCard = combined.map((item) => JSON.stringify(item));
 
     let uniqueCards = stringifiedCard.filter(
       (card, index) => stringifiedCard.indexOf(card) === index
     );
 
-    let cards = uniqueCards.map(item => JSON.parse(item)).slice(0, 5);
+    let cards = uniqueCards.map((item) => JSON.parse(item)).slice(0, 5);
 
     return cards;
   };
@@ -582,7 +583,7 @@ class App extends Component {
 
     logs.unshift({
       text: text,
-      icon: "insert_comment"
+      icon: "insert_comment",
     });
 
     this.setState({ logs });
@@ -590,22 +591,22 @@ class App extends Component {
     return logs;
   };
 
-  givePoints = player => {
+  givePoints = (player) => {
     let players = [...this.state.players];
     let deck = [...this.state.deck];
 
-    players.forEach(p => {
+    players.forEach((p) => {
       if (p.id === player.id) {
         p.points += winningHands
-          .map(winningHand => winningHand.hand)
+          .map((winningHand) => winningHand.hand)
           .indexOf(player.round.hand);
       }
 
-      p.round.cards.forEach(c => {
+      p.round.cards.forEach((c) => {
         c.highlight = false;
 
         if (p.id === player.id) {
-          player.round.bests.forEach(card => {
+          player.round.bests.forEach((card) => {
             if (JSON.stringify(c) === JSON.stringify(card)) {
               c.highlight = true;
             }
@@ -614,10 +615,10 @@ class App extends Component {
       });
     });
 
-    deck.forEach(c => {
+    deck.forEach((c) => {
       c.highlight = false;
 
-      player.round.bests.forEach(card => {
+      player.round.bests.forEach((card) => {
         if (JSON.stringify(c) === JSON.stringify(card)) {
           c.highlight = true;
         }

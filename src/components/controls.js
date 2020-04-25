@@ -1,12 +1,13 @@
 import React, { Component } from "react";
+import M from "materialize-css";
+
 import "./controls.css";
 import { stages } from "./definitions";
-import M from "materialize-css";
 
 class Controls extends Component {
   state = {};
   componentDidMount() {
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       let logsModal = document.querySelector("#logs-modal");
 
       M.Modal.init(logsModal);
